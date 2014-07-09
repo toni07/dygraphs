@@ -1,7 +1,7 @@
 {
   "name": "dygraphs",
   "version": "1.0.1",
-  "description": "dygraphs is a fast, flexible open source JavaScript charting library.",
+  "description": "My DyGraphs wrapper with extra params",
   "main": "dygraph.js",
   "directories": {
     "doc": "docs",
