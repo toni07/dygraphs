@@ -181,6 +181,9 @@ rangeSelector.prototype.resize_ = function() {
   if (this.dygraph_.getOptionForAxis('drawAxis', 'x')) {
     xAxisLabelHeight = this.getOption_('xAxisHeight') || (this.getOption_('axisLabelFontSize') + 2 * this.getOption_('axisTickSize'));
   }
+  if(null != this.getOption_('heightBetweenChartAndTimeline')){	//ajout aep
+    b+= this.getOption_('heightBetweenChartAndTimeline');
+  }
   this.canvasRect_ = {
     x: plotArea.x,
     y: plotArea.y + plotArea.h + xAxisLabelHeight + 4,

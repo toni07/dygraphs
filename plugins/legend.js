@@ -220,8 +220,9 @@ generateLegendHTML = function(g, x, sel_points, oneEmWidth) {
   // TODO(danvk): remove this use of a private API
   var xOptView = g.optionsViewForAxis_('x');
   var xvf = xOptView('valueFormatter');
+  var isFullCustomLegendX = xOptView('isFullCustomLegend');	//modif aep
   html = xvf(x, xOptView, labels[0], g);
-  if (html !== '') {
+  if (html !== '' && !isFullCustomLegendX) {
     html += ':';
   }
 
@@ -243,13 +244,17 @@ generateLegendHTML = function(g, x, sel_points, oneEmWidth) {
     var series = g.getPropertiesForSeries(pt.name);
     var yOptView = yOptViews[series.axis - 1];
     var fmtFunc = yOptView('valueFormatter');
+    var isFullCustomLegend = yOptView('isFullCustomLegend');
     var yval = fmtFunc(pt.yval, yOptView, pt.name, g);
 
     var cls = (pt.name == highlightSeries) ? " class='highlight'" : "";
 
     // TODO(danvk): use a template string here and make it an attribute.
-    html += "<span" + cls + ">" + " <b><span style='color: " + series.color + ";'>" +
-        escapeHTML(pt.name) + "</span></b>:&nbsp;" + yval + "</span>";
+    if(!isFullCustomLegend){
+        html += "<span" + cls + ">" + " <b><span style='color: " + series.color + ";'>" +
+                escapeHTML(pt.name) + "</span></b>:&nbsp;" + yval + "</span>";
+    }
+
   }
   return html;
 };
