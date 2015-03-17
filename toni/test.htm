@@ -1,0 +1,52 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title>Testing</title>
+	<script src="dygraph-combined.js"></script>
+	<script src="dtp-dygraph.js"></script>
+	<style>
+		#div_g { position: absolute; left: 20px; right: 100px; top: 100px; bottom: 10px; }
+		.center {text-align: center;}
+		.center>div {display: inline-block;}
+	</style>
+</head>
+<body><h1>Body</h1>
+	
+	<div class="center"><div id="chart-legend"></div></div>
+	<div id="div_g"></div>
+	
+	<script>
+		function getDataJSON(){
+			 return [{"history":100.16,"prevision":134.24,"observ_max":152.4,"timing":"2013-04-07","observ_min":100.16},{"history":158.26,"prevision":146.36,"observ_max":158.26,"timing":"2013-04-14","observ_min":133.32},{"history":188.92,"prevision":134.23,"observ_max":188.92,"timing":"2013-04-21","observ_min":131.96},{"history":141.64,"prevision":132.37,"observ_max":141.64,"timing":"2013-04-28","observ_min":121.78},{"history":112.78,"prevision":143.41,"observ_max":141.504,"timing":"2013-05-05","observ_min":112.78},{"history":120.78,"prevision":157.13,"observ_max":155.22,"timing":"2013-05-12","observ_min":109.38},{"history":165.09,"prevision":115.28,"observ_max":165.09,"timing":"2013-05-19","observ_min":113.32},{"history":131.15,"prevision":134.92,"observ_max":145.23,"timing":"2013-05-26","observ_min":131.15},{"history":135.2,"prevision":159.46,"observ_max":158.12,"timing":"2013-06-02","observ_min":120.36},{"history":143.42,"prevision":143.31,"observ_max":143.42,"timing":"2013-06-09","observ_min":128.55},{"history":159.28,"prevision":159.7,"observ_max":159.28,"timing":"2013-06-16","observ_min":139.55},{"history":149.14,"prevision":136.15,"observ_max":149.14,"timing":"2013-06-23","observ_min":123.48},{"history":153.28,"prevision":160.85,"observ_max":159.56,"timing":"2013-06-30","observ_min":153.28},{"history":153.42,"prevision":142.43,"observ_max":153.42,"timing":"2013-07-07","observ_min":134.98},{"history":124.12,"prevision":132.5,"observ_max":139.88,"timing":"2013-07-14","observ_min":119.71},{"history":108.44,"prevision":125.24,"observ_max":127.68,"timing":"2013-07-21","observ_min":108.44},{"history":118.2,"prevision":122.64,"observ_max":130.26,"timing":"2013-07-28","observ_min":109.4},{"history":122.28,"prevision":119.11,"observ_max":126.86,"timing":"2013-08-04","observ_min":105.64},{"history":93,"prevision":104.67,"observ_max":104,"timing":"2013-08-11","observ_min":93},{"history":72.12,"prevision":100.6,"observ_max":113.68,"timing":"2013-08-18","observ_min":72.12},{"history":105.84,"prevision":116.42,"observ_max":117,"timing":"2013-08-25","observ_min":105.84},{"history":119.28,"prevision":140.51,"observ_max":142.34,"timing":"2013-09-01","observ_min":119.28},{"history":160.66,"prevision":154.83,"observ_max":160.66,"timing":"2013-09-08","observ_min":148.76},{"history":154.94,"prevision":140.25,"observ_max":154.94,"timing":"2013-09-15","observ_min":136.6},{"history":172.44,"prevision":162.36,"observ_max":172.44,"timing":"2013-09-22","observ_min":154.17},{"history":148.42,"prevision":142.36,"observ_max":148.42,"timing":"2013-09-29","observ_min":133.97},{"history":163.89,"prevision":147.85,"observ_max":163.89,"timing":"2013-10-06","observ_min":143.58},{"history":150.62,"prevision":143.71,"observ_max":150.62,"timing":"2013-10-13","observ_min":130.86},{"history":156.52,"prevision":150.66,"observ_max":160.4,"timing":"2013-10-20","observ_min":132.9},{"history":141.14,"prevision":152.37,"observ_max":164.46,"timing":"2013-10-27","observ_min":131.86},{"history":96.84,"prevision":129.46,"observ_max":128.08,"timing":"2013-11-03","observ_min":96.84},{"history":160.26,"prevision":128.6,"observ_max":160.26,"timing":"2013-11-10","observ_min":120.14},{"history":148.5,"prevision":123.85,"observ_max":148.5,"timing":"2013-11-17","observ_min":112.87},{"history":145.22,"prevision":168.49,"observ_max":198.5,"timing":"2013-11-24","observ_min":130.02},{"history":133.94,"prevision":143.85,"observ_max":148.36,"timing":"2013-12-01","observ_min":131.3},{"history":136.94,"prevision":133.73,"observ_max":152.16,"timing":"2013-12-08","observ_min":107.96},{"history":149.66,"prevision":140.07,"observ_max":149.66,"timing":"2013-12-15","observ_min":128.56},{"history":152.82,"prevision":138.79,"observ_max":153.06,"timing":"2013-12-22","observ_min":117.32},{"history":151.1,"prevision":150.49,"observ_max":151.1,"timing":"2013-12-29","observ_min":146.98},{"history":84.9,"prevision":139.98,"observ_max":153.76,"timing":"2014-01-05","observ_min":84.9},{"history":172.18,"prevision":172.74,"observ_max":172.18,"timing":"2014-01-12","observ_min":135.62},{"history":141.12,"prevision":140.55,"observ_max":141.12,"timing":"2014-01-19","observ_min":115.58},{"history":177.98,"prevision":151.1,"observ_max":177.98,"timing":"2014-01-26","observ_min":121.72},{"history":126.9,"prevision":136.63,"observ_max":157.3,"timing":"2014-02-02","observ_min":125.92},{"history":132.26,"prevision":131.94,"observ_max":134.76,"timing":"2014-02-09","observ_min":113.74},{"history":132.88,"prevision":148.2,"observ_max":148.2,"timing":"2014-02-16","observ_min":122.26},{"history":131.16,"prevision":130.94,"observ_max":139.26,"timing":"2014-02-23","observ_min":120.22},{"history":129.14,"prevision":128.5,"observ_max":129.14,"timing":"2014-03-02","observ_min":113.72},{"history":157.14,"prevision":139.17,"observ_max":157.14,"timing":"2014-03-09","observ_min":123.5},{"history":137.38,"prevision":146.69,"observ_max":164.96,"timing":"2014-03-16","observ_min":109.32},{"history":155.74,"prevision":160.58,"observ_max":166.1,"timing":"2014-03-23","observ_min":147.16},{"history":138.36,"prevision":146.94,"observ_max":146.6,"timing":"2014-03-30","observ_min":138.36},{"history":154.78,"prevision":135.3,"observ_max":154.78,"timing":"2014-04-06","observ_min":100.16},{"history":139.52,"prevision":152.57,"observ_max":158.26,"timing":"2014-04-13","observ_min":133.32},{"history":110.91,"prevision":165.2,"observ_max":188.92,"timing":"2014-04-20","observ_min":110.91},{"history":128.2,"prevision":152.32,"observ_max":141.64,"timing":"2014-04-27","observ_min":121.78},{"history":83.04,"prevision":134.19,"observ_max":141.504,"timing":"2014-05-04","observ_min":83.04},{"history":171.53,"prevision":163.8,"observ_max":171.53,"timing":"2014-05-11","observ_min":109.38},{"history":150.54,"prevision":150.23,"observ_max":165.09,"timing":"2014-05-18","observ_min":113.32},{"history":137.84,"prevision":152.65,"observ_max":145.23,"timing":"2014-05-25","observ_min":131.15},{"history":139.145,"prevision":151.85,"observ_max":158.12,"timing":"2014-06-01","observ_min":120.36},{"history":156.56,"prevision":146.1,"observ_max":156.56,"timing":"2014-06-08","observ_min":128.55},{"history":139.88,"prevision":161.07,"observ_max":159.28,"timing":"2014-06-15","observ_min":139.55},{"history":153.66,"prevision":145.85,"observ_max":153.66,"timing":"2014-06-22","observ_min":123.48},{"history":134,"prevision":163.42,"observ_max":159.56,"timing":"2014-06-29","observ_min":134},{"history":147.3,"prevision":152.26,"observ_max":153.42,"timing":"2014-07-06","observ_min":134.98},{"history":126.36,"prevision":133.46,"observ_max":139.88,"timing":"2014-07-13","observ_min":119.71},{"history":122.745,"prevision":121.68,"observ_max":127.68,"timing":"2014-07-20","observ_min":108.44},{"history":113.74,"prevision":126.94,"observ_max":130.26,"timing":"2014-07-27","observ_min":109.4}
+				,{"history":126.85,"prevision":131.02,"observ_max":126.86,"timing":"2014-08-03","observ_min":105.64}
+				,{"history":null,"prevision":108.17,"observ_max":104,"timing":"2014-08-10","observ_min":93}	
+				,{"history":null,"prevision":94.28,"observ_max":113.68,"timing":"2014-08-17","observ_min":72.12}]
+		 };
+			   
+		 function getData(){
+			
+			var result = [];
+			var dataList = getDataJSON();
+			for(var i=0; i<dataList.length; i++){
+				var dataLine = dataList[i];
+				result.push(
+					[new Date(dataLine.timing)
+					, [dataLine.observ_min, dataLine.history, dataLine.observ_max]
+					, [null, dataLine.prevision, null]
+					]
+				);
+			}
+			return result;
+		 }
+			
+		DtpDyGraph.dipslayChart('div_g', getData(), {
+			colors: ['#00ff00', '#ff0000'],
+			customBars: true,
+			labels: ['Période', 'Historique', 'Prévision'],
+			connectSeparatedPoints: true,
+			labelsDiv: document.getElementById('chart-legend')
+		});
+	</script>
+	
+</body>
+</html>
