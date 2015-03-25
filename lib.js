@@ -714,7 +714,40 @@ Dygraph.prototype.doZoomY_=function(h,f){this.currentZoomRectArgs_=null;var c=th
 	if(this.boundaryIds_[b]){return this.boundaryIds_[b][0]}else{for(var a=0;a<this.boundaryIds_.length;a++){if(this.boundaryIds_[a]!==undefined){return this.boundaryIds_[a][0]}}return 0}};
 	Dygraph.prototype.animateSelection_=function(f){var e=10;var c=30;if(this.fadeLevel===undefined){this.fadeLevel=0}if(this.animateId===undefined){this.animateId=0}var g=this.fadeLevel;
 	var b=f<0?g:e-g;if(b<=0){if(this.fadeLevel){this.updateSelection_(1)}return}var a=++this.animateId;var d=this;Dygraph.repeatAndCleanup(function(h){if(d.animateId!=a){return}d.fadeLevel+=f;
-	if(d.fadeLevel===0){d.clearSelection()}else{d.updateSelection_(d.fadeLevel/e)}},b,c,function(){})};Dygraph.prototype.updateSelection_=function(d){this.cascadeEvents_("select",{selectedX:this.lastx_,selectedPoints:this.selPoints_});var h;var n=this.canvas_ctx_;if(this.attr_("highlightSeriesOpts")){n.clearRect(0,0,this.width_,this.height_);var f=1-this.attr_("highlightSeriesBackgroundAlpha");if(f){var g=true;if(g){if(d===undefined){this.animateSelection_(1);return}f*=d}n.fillStyle="rgba(255,255,255,"+f+")";n.fillRect(0,0,this.width_,this.height_)}this.plotter_._renderLineChart(this.highlightSet_,n)}else{if(this.previousVerticalX_>=0){var j=0;var k=this.attr_("labels");for(h=1;h<k.length;h++){var c=this.attr_("highlightCircleSize",k[h]);if(c>j){j=c}}var l=this.previousVerticalX_;n.clearRect(l-j-1,0,2*j+2,this.height_)}}if(this.isUsingExcanvas_&&this.currentZoomRectArgs_){Dygraph.prototype.drawZoomRect_.apply(this,this.currentZoomRectArgs_)}if(this.selPoints_.length>0){
+		if(d.fadeLevel===0){
+			d.clearSelection()
+		}
+		else{
+			d.updateSelection_(d.fadeLevel/e)
+		}
+	},b,c,function(){})};Dygraph.prototype.updateSelection_=function(d){this.cascadeEvents_("select",{selectedX:this.lastx_,selectedPoints:this.selPoints_});
+	var h;var n=this.canvas_ctx_;
+	if(this.attr_("highlightSeriesOpts")){
+		n.clearRect(0,0,this.width_,this.height_);var f=1-this.attr_("highlightSeriesBackgroundAlpha");
+	if(f){var g=true;if(g){if(d===undefined){this.animateSelection_(1);return}f*=d}n.fillStyle="rgba(255,255,255,"+f+")";
+	n.fillRect(0,0,this.width_,this.height_)}
+	this.plotter_._renderLineChart(this.highlightSet_,n)
+	}
+	else{
+		if(this.previousVerticalX_>=0){
+			var j=0;
+			var k = [];
+			for(var i=0; i<this.series.length; i++){
+				k.push(this.series[i].label);
+			}
+			for(h=0;h<k.length;h++){
+				var c=this.attr_("highlightCircleSize",k[h]);
+				if(c>j){
+					j=c
+				}
+			}
+			var l=this.previousVerticalX_;n.clearRect(l-j-1,0,2*j+2,this.height_)
+		}
+	}
+	if(this.isUsingExcanvas_&&this.currentZoomRectArgs_){
+		Dygraph.prototype.drawZoomRect_.apply(this,this.currentZoomRectArgs_)
+	}
+	if(this.selPoints_.length>0){
 	var b=this.selPoints_[0].canvasx;n.save();for(h=0;h<this.selPoints_.length;h++){var o=this.selPoints_[h];if(!Dygraph.isOK(o.canvasy)){continue}
 	var a=this.attr_("highlightCircleSize",o.name);var m=this.attr_("drawHighlightPointCallback",o.name);var e=this.plotter_.colors[o.name];if(!m){m=Dygraph.Circles.DEFAULT}n.lineWidth=this.attr_("strokeWidth",o.name);n.strokeStyle=e;n.fillStyle=e;m(this.g,o.name,n,b,o.canvasy,e,a,o.idx)}n.restore();this.previousVerticalX_=b}};Dygraph.prototype.setSelection=function(f,h,g){this.selPoints_=[];var e=false;if(f!==false&&f>=0){if(f!=this.lastRow_){e=true}this.lastRow_=f;for(var d=0;d<this.layout_.points.length;++d){var b=this.layout_.points[d];var c=f-this.getLeftBoundary_(d);if(c<b.length){var a=b[c];if(a.yval!==null){this.selPoints_.push(a)}}}}else{if(this.lastRow_>=0){e=true}this.lastRow_=-1}if(this.selPoints_.length){this.lastx_=this.selPoints_[0].xval}else{this.lastx_=-1}if(h!==undefined){if(this.highlightSet_!==h){e=true}this.highlightSet_=h}if(g!==undefined){this.lockedSet_=g}if(e){this.updateSelection_(undefined)}return e};Dygraph.prototype.mouseOut_=function(a){if(this.attr_("unhighlightCallback")){this.attr_("unhighlightCallback")(a)}if(this.attr_("hideOverlayOnMouseOut")&&!this.lockedSet_){this.clearSelection()}};Dygraph.prototype.clearSelection=function(){this.cascadeEvents_("deselect",{});this.lockedSet_=false;if(this.fadeLevel){this.animateSelection_(-1);return}this.canvas_ctx_.clearRect(0,0,this.width_,this.height_);this.fadeLevel=0;this.selPoints_=[];this.lastx_=-1;this.lastRow_=-1;this.highlightSet_=null};Dygraph.prototype.getSelection=function(){if(!this.selPoints_||this.selPoints_.length<1){return -1}for(var c=0;c<this.layout_.points.length;c++){var a=this.layout_.points[c];for(var b=0;b<a.length;b++){if(a[b].x==this.selPoints_[0].x){return a[b].idx}}}return -1};Dygraph.prototype.getHighlightSeries=function(){return this.highlightSet_};Dygraph.prototype.isSeriesLocked=function(){return this.lockedSet_};Dygraph.prototype.loadedEvent_=function(a){this.rawData_=this.parseCSV_(a);this.predraw_()};Dygraph.prototype.addXTicks_=function(){var a;if(this.dateWindow_){a=[this.dateWindow_[0],this.dateWindow_[1]]}else{a=this.xAxisExtremes()}var c=this.optionsViewForAxis_("x");var b=c("ticker")(a[0],a[1],this.width_,c,this);this.layout_.setXTicks(b)};
 
@@ -1715,12 +1748,13 @@ Dygraph.Plugins.Legend=(function(){
 			//var e = valueFormatterFunction(t.yval, axisOptions, t.name, w);
 			//result.appendChild(e);
 		}
-		for(u=0; u<w.series.length;u++){			
+		for(u=0; u<w.series.length;u++){
+			var serie = w.series[u];
 			var currentValue = null;
-			if(-1 != seriesNamesSelected.indexOf(serieName)){
-				currentValue = seriesNamesValues[serieName].yval;
+			if(-1 != seriesNamesSelected.indexOf(serie.label)){
+				currentValue = seriesNamesValues[serie.label].yval;
 			}
-			var e = w.series[u].legendDomElement(currentValue, w.series[u], u, w);
+			var e = serie.legendDomElement(currentValue, serie, u, w);
 			result.appendChild(e);	//add value legend
 		}
 		
