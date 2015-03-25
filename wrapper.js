@@ -191,7 +191,11 @@ var DtpDyGraph = {
                             tmpMonth = 'xx';
                             tmpYear = 'xxxx';
                         }
-                        return '<div style="width:10%;margin:auto;"><u>' + tmpDay + '/' + tmpMonth + '/' + tmpYear + '</u></div>';
+						var tmpDiv = document.createElement('div');
+						tmpDiv.innerHTML = '<u>' + tmpDay + '/' + tmpMonth + '/' + tmpYear + '</u>';
+						tmpDiv.style.margin = 'auto';
+						tmpDiv.style.width = '10%';
+						return tmpDiv;
                     }
 				},
 				y: {
@@ -204,7 +208,13 @@ var DtpDyGraph = {
 						var shortSerieName = serieName.replace('[##DATE## : ##VALUE## %]',"");
 						shortSerieName = shortSerieName.replace('[##DATE## : ##VALUE## Kg]',"");
 						shortSerieName=shortSerieName.charAt(0).toUpperCase()+shortSerieName.substring(1).toLowerCase();
-						return '<span><span class="legend-square" style="background-color:'+ graphObj.getPropertiesForSeries(serieName).color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + shortSerieName + ': '+ tmpVal + ' '+ unitLabel +' </span>&nbsp;';
+						var tmpDiv = document.createElement('span');
+						tmpDiv.style.cursor = 'pointer';
+						tmpDiv.innerHTML = '<span><span class="legend-square" style="background-color:'+ graphObj.getPropertiesForSeries(serieName).color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + shortSerieName + ': '+ tmpVal + ' '+ unitLabel +' </span>&nbsp;';
+						tmpDiv.addEventListener('click', function(){
+							graphObj.setVisibility(0, false);
+						});
+						return tmpDiv;
 					}
 				},
 				
