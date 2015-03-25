@@ -40,9 +40,18 @@
 		 }
 			
 		DtpDyGraph.dipslayChart('div_g', getData(), {
-			colors: ['#00ff00', '#ff0000'],
+			series: [{
+				color: '#00ff00',
+				label: 'Historique',
+				dataIndex: 1
+			}, {
+				color: '#ff0000',
+				label: 'Prévision',
+				dataIndex: 2
+			}],
+			/*colors: ['#00ff00', '#ff0000'],*/
 			customBars: true,
-			labels: ['Période', 'Historique', 'Prévision'],
+			/*labels: ['Période', 'Historique', 'Prévision'],*/
 			connectSeparatedPoints: true,
 			labelsDiv: document.getElementById('chart-legend')
 		});
