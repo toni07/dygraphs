@@ -22,6 +22,7 @@ var DtpDyGraph = {
 	
 		var chartOptions = {
 			series: options.series,
+			xAxisConfiguration: options.xAxisConfiguration,
 			labels: options.labels,
 			legend: 'always',
 			nonEmptyLengendOnStartUp: true,
@@ -180,7 +181,7 @@ var DtpDyGraph = {
 			labelFontColor: "black",		    
 			xlabel: (null !=options.xlabel) ? options.xlabel : 'Période',
 			axes: (null !=options.axes) ? options.axes : {
-				x: {
+				/*x: {
 					valueFormatter: function(val, opts, dygraph, p1, p2){
 
                         var tmpDate = new Date(val);
@@ -198,27 +199,10 @@ var DtpDyGraph = {
 						tmpDiv.style.width = '10%';
 						return tmpDiv;
                     }
-				},
+				},*/
 				y: {
-					isFullCustomLegend: true,
-					valueFormatter: function(val, opts, serieName, graphObj){
-						var tmpVal = 'N/A';
-						if(null != val){
-							tmpVal = val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
-						}
-						var shortSerieName = serieName.replace('[##DATE## : ##VALUE## %]',"");
-						shortSerieName = shortSerieName.replace('[##DATE## : ##VALUE## Kg]',"");
-						shortSerieName=shortSerieName.charAt(0).toUpperCase()+shortSerieName.substring(1).toLowerCase();
-						var tmpDiv = document.createElement('span');
-						tmpDiv.style.cursor = 'pointer';
-						tmpDiv.innerHTML = '<span><span class="legend-square" style="background-color:'+ graphObj.getPropertiesForSeries(serieName).color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + shortSerieName + ': '+ tmpVal + ' '+ unitLabel +' </span>&nbsp;';
-						tmpDiv.addEventListener('click', function(){
-							graphObj.setVisibility(0, false);
-						});
-						return tmpDiv;
-					}
-				},
-				
+					isFullCustomLegend: true
+				},				
 				y2: {
 					isFullCustomLegend: true,
 					valueFormatter: function(val, opts, serieName, graphObj){

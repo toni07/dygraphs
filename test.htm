@@ -38,17 +38,56 @@
 			}
 			return result;
 		 }
+		 
+		 var legendDomElement =  function(val, serie, serieIndex, graphObj){
+			var tmpVal = 'N/A';
+			if(null != val){
+				tmpVal = val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
+			}
+			var shortSerieName = serie.label.replace('[##DATE## : ##VALUE## %]',"");
+			shortSerieName = shortSerieName.replace('[##DATE## : ##VALUE## Kg]',"");
+			shortSerieName = shortSerieName.charAt(0).toUpperCase()+shortSerieName.substring(1).toLowerCase();
+			var tmpDiv = document.createElement('span');
+			tmpDiv.style.cursor = 'pointer';
+			tmpDiv.innerHTML = '<span><span class="legend-square" style="background-color:'+ serie.color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + shortSerieName + ': '+ tmpVal + ' '+ serie.unitLabel +' </span>&nbsp;';
+			tmpDiv.addEventListener('click', function(){
+				graphObj.setVisibility(serieIndex, false);
+			});
+			return tmpDiv;
+		};
 			
 		DtpDyGraph.dipslayChart('div_g', getData(), {
 			series: [{
 				color: '#00ff00',
 				label: 'Historique',
-				dataIndex: 1
+				dataIndex: 1,
+				legendDomElement: legendDomElement,
+				unitLabel: 'tonnes'
 			}, {
 				color: '#ff0000',
 				label: 'Prévision',
-				dataIndex: 2
+				dataIndex: 2,
+				legendDomElement: legendDomElement,
+				unitLabel: 'kg'
 			}],
+			xAxisConfiguration: {
+				legendDomElement: function(val, dygraph){
+					var tmpDate = new Date(val);
+					var tmpDay = String('0' + tmpDate.getDate()).slice(-2);
+					var tmpMonth = String('0' + (tmpDate.getMonth() + 1)).slice(-2);
+					var tmpYear = tmpDate.getFullYear();
+					if(null == val){
+						tmpDay = 'xx';
+						tmpMonth = 'xx';
+						tmpYear = 'xxxx';
+					}
+					var tmpDiv = document.createElement('div');
+					tmpDiv.innerHTML = '<u>' + tmpDay + '/' + tmpMonth + '/' + tmpYear + '</u>';
+					tmpDiv.style.margin = 'auto';
+					tmpDiv.style.width = '10%';
+					return tmpDiv;
+				}
+			},
 			/*colors: ['#00ff00', '#ff0000'],*/
 			customBars: true,
 			/*labels: ['Période', 'Historique', 'Prévision'],*/

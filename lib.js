@@ -63,11 +63,71 @@ var DygraphOptions=(function(){
 		}
 		return 0
 	};
-	a.prototype.reparseSeries=function(){
-		var g=this.get("labels");
-		if(!g){return}
-		this.labels_=g.slice(1);
-		this.yAxes_=[{series:[],options:{}}];this.xAxis_={options:{}};this.series_={};var h=!this.user_.series;if(h){var c=0;for(var j=0;j<this.labels_.length;j++){var i=this.labels_[j];var e=this.user_[i]||{};var b=0;var d=e.axis;if(typeof(d)=="object"){b=++c;this.yAxes_[b]={series:[i],options:d}}if(!d){this.yAxes_[0].series.push(i)}this.series_[i]={idx:j,yAxis:b,options:e}}for(var j=0;j<this.labels_.length;j++){var i=this.labels_[j];var e=this.series_[i]["options"];var d=e.axis;if(typeof(d)=="string"){if(!this.series_.hasOwnProperty(d)){Dygraph.error("Series "+i+" wants to share a y-axis with series "+d+", which does not define its own axis.");return}var b=this.series_[d].yAxis;this.series_[i].yAxis=b;this.yAxes_[b].series.push(i)}}}else{for(var j=0;j<this.labels_.length;j++){var i=this.labels_[j];var e=this.user_.series[i]||{};var b=a.axisToIndex_(e.axis);this.series_[i]={idx:j,yAxis:b,options:e};if(!this.yAxes_[b]){this.yAxes_[b]={series:[i],options:{}}}else{this.yAxes_[b].series.push(i)}}}var f=this.user_.axes||{};Dygraph.update(this.yAxes_[0].options,f.y||{});if(this.yAxes_.length>1){Dygraph.update(this.yAxes_[1].options,f.y2||{})}Dygraph.update(this.xAxis_.options,f.x||{})
+	a.prototype.reparseSeries = function(){
+		var chartSeries = this.dygraph_.series;
+		var g = [];
+		for(var i=0; i<chartSeries.length; i++){
+			g.push(chartSeries[i].label);
+		}
+		if(!g){
+			return
+		}
+		this.labels_ = g;
+		this.yAxes_=[{series:[],options:{}}];
+		this.xAxis_={options:{}};
+		this.series_={};
+		var h=!this.user_.series;
+		if(h){
+			var c=0;
+			for(var j=0;j<this.labels_.length;j++){
+				var i = this.labels_[j];
+				var e = this.user_[i]||{};
+				var b = 0;
+				var d = e.axis;
+				if(typeof(d)=="object"){
+					b=++c;
+					this.yAxes_[b]={
+						series: [i],
+						options: d
+					}
+				}
+				if(!d){
+					this.yAxes_[0].series.push(i)
+				}
+				this.series_[i]={
+					idx:j,
+					yAxis:b,
+					options:e
+				}
+			}
+			for(var j=0;j<this.labels_.length;j++){
+				var i=this.labels_[j];var e=this.series_[i]["options"];var d=e.axis;
+				if(typeof(d)=="string"){
+					if(!this.series_.hasOwnProperty(d)){
+						Dygraph.error("Series "+i+" wants to share a y-axis with series "+d+", which does not define its own axis.");return
+					}
+					var b=this.series_[d].yAxis;
+					this.series_[i].yAxis=b;
+					this.yAxes_[b].series.push(i)
+				}
+			}
+		}
+		else{
+			for(var j=0;j<this.labels_.length;j++){
+				var i=this.labels_[j];
+				var e=this.user_.series[i]||{};
+				var b=a.axisToIndex_(e.axis);
+				this.series_[i]={idx:j,yAxis:b,options:e};
+				if(!this.yAxes_[b]){
+					this.yAxes_[b]={series:[i],options:{}}
+				}
+				else{
+					this.yAxes_[b].series.push(i)
+				}
+			}
+		}
+		var f=this.user_.axes||{};
+		Dygraph.update(this.yAxes_[0].options,f.y||{});if(this.yAxes_.length>1){Dygraph.update(this.yAxes_[1].options,f.y2||{})}Dygraph.update(this.xAxis_.options,f.x||{})
 	};
 	a.prototype.get=function(c){
 		var b=this.getGlobalUser_(c);
@@ -359,8 +419,30 @@ DygraphCanvasRenderer._errorPlotter=function(s){
 	m.fill()
 };
 
-DygraphCanvasRenderer._fillPlotter=function(F){if(F.singleSeriesName){return}if(F.seriesIndex!==0){return}var D=F.dygraph;var I=D.getLabels().slice(1);for(var C=I.length;C>=0;C--){if(!D.visibility()[C]){I.splice(C,1)}}var h=(function(){for(var e=0;e<I.length;e++){if(D.getOption("fillGraph",I[e])){return true}}return false})();if(!h){return}var w=F.drawingContext;var E=F.plotArea;var c=F.allSeriesPoints;var z=c.length;var y=D.getOption("fillAlpha");var k=D.getOption("stackedGraph");var q=D.getColors();var s={};var a;var r;for(var u=z-1;u>=0;u--){var n=I[u];if(!D.getOption("fillGraph",n)){continue}var p=D.getOption("stepPlot",n);var x=q[u];var f=D.axisPropertiesForSeries(n);var d=1+f.minyval*f.yscale;if(d<0){d=0}else{if(d>1){d=1}}d=E.h*d+E.y;var B=c[u];var A=Dygraph.createIterator(B,0,B.length,DygraphCanvasRenderer._getIteratorPredicate(D.getOption("connectSeparatedPoints")));var m=NaN;var l=[-1,-1];var t;var b=new RGBColorParser(x);var H="rgba("+b.r+","+b.g+","+b.b+","+y+")";w.fillStyle=H;w.beginPath();var j,G=true;while(A.hasNext){var v=A.next();if(!Dygraph.isOK(v.y)){m=NaN;if(v.y_stacked!==null&&!isNaN(v.y_stacked)){
-	s[v.canvasx]=E.h*v.y_stacked+E.y}continue}if(k){if(!G&&j==v.xval){continue}else{G=false;j=v.xval}a=s[v.canvasx];var o;if(a===undefined){o=d}else{if(r){o=a[0]}else{o=a}}t=[v.canvasy,o];if(p){if(l[0]===-1){s[v.canvasx]=[v.canvasy,d]}else{s[v.canvasx]=[v.canvasy,l[0]]}}else{s[v.canvasx]=v.canvasy}}else{t=[v.canvasy,d]}if(!isNaN(m)){w.moveTo(m,l[0]);if(p){w.lineTo(v.canvasx,l[0])}else{w.lineTo(v.canvasx,t[0])}if(r&&a){w.lineTo(v.canvasx,a[1])}else{w.lineTo(v.canvasx,t[1])}w.lineTo(m,l[1]);w.closePath()}l=t;m=v.canvasx}r=p;w.fill()}};"use strict";
+DygraphCanvasRenderer._fillPlotter=function(F){
+	if(F.singleSeriesName){return}
+	if(F.seriesIndex!==0){return}
+	var D = F.dygraph;
+	var I = [];
+	for(var i=0; i<D.series.length; i++){
+		I.push(D.series[i].label);
+	}
+	for(var C = I.length; C>=0; C--){
+		if(!D.visibility()[C]){
+			I.splice(C, 1);
+		}
+	}
+	var h=(function(){for(var e=0;e<I.length;e++){if(D.getOption("fillGraph",I[e])){return true}}return false})();if(!h){return}var w=F.drawingContext;
+	var E=F.plotArea;var c=F.allSeriesPoints;var z=c.length;var y=D.getOption("fillAlpha");var k=D.getOption("stackedGraph");var q=D.getColors();var s={};var a;
+	var r;for(var u=z-1;u>=0;u--){var n=I[u];if(!D.getOption("fillGraph",n)){continue}var p=D.getOption("stepPlot",n);var x=q[u];var f=D.axisPropertiesForSeries(n);
+	var d=1+f.minyval*f.yscale;if(d<0){d=0}else{if(d>1){d=1}}d=E.h*d+E.y;var B=c[u];var A=Dygraph.createIterator(B,0,B.length,DygraphCanvasRenderer._getIteratorPredicate(D.getOption("connectSeparatedPoints")));
+	var m=NaN;var l=[-1,-1];var t;var b=new RGBColorParser(x);var H="rgba("+b.r+","+b.g+","+b.b+","+y+")";w.fillStyle=H;w.beginPath();var j,G=true;while(A.hasNext){var v=A.next();if(!Dygraph.isOK(v.y)){m=NaN;
+	if(v.y_stacked!==null&&!isNaN(v.y_stacked)){
+	s[v.canvasx]=E.h*v.y_stacked+E.y}continue}if(k){if(!G&&j==v.xval){continue}else{G=false;j=v.xval}a=s[v.canvasx];var o;if(a===undefined){o=d}else{if(r){o=a[0]}else{o=a}}t=[v.canvasy,o];
+	if(p){if(l[0]===-1){s[v.canvasx]=[v.canvasy,d]}else{s[v.canvasx]=[v.canvasy,l[0]]}}else{s[v.canvasx]=v.canvasy}}else{t=[v.canvasy,d]}if(!isNaN(m)){w.moveTo(m,l[0]);if(p){w.lineTo(v.canvasx,l[0])}
+	else{w.lineTo(v.canvasx,t[0])}if(r&&a){w.lineTo(v.canvasx,a[1])}else{w.lineTo(v.canvasx,t[1])}w.lineTo(m,l[1]);w.closePath()}l=t;m=v.canvasx}r=p;w.fill()}
+};
+"use strict";
 	
 	
 var Dygraph = function(divElem, dataArray, options){
@@ -453,6 +535,7 @@ Dygraph.prototype.__init__ = function(a, dataArray, chartOptions){
 	this.zoomed_x_ = false;
 	this.zoomed_y_ = false;
 	this.series = chartOptions.series;
+	this.xAxisConfiguration = chartOptions.xAxisConfiguration;
 	a.innerHTML = '';
 	if(a.style.width===""&& chartOptions.width){
 		a.style.width= chartOptions.width+"px"
@@ -517,7 +600,93 @@ Dygraph.prototype.getValue=function(b,a){
 	if(b<0||b>this.rawData_.length){return null}if(a<0||a>this.rawData_[b].length){return null}return this.rawData_[b][a]
 };
 
-Dygraph.prototype.createInterface_=function(){var a=this.maindiv_;this.graphDiv=document.createElement("div");this.graphDiv.style.textAlign="left";a.appendChild(this.graphDiv);this.canvas_=Dygraph.createCanvas();this.canvas_.style.position="absolute";this.hidden_=this.createPlotKitCanvas_(this.canvas_);this.resizeElements_();this.canvas_ctx_=Dygraph.getContext(this.canvas_);this.hidden_ctx_=Dygraph.getContext(this.hidden_);this.graphDiv.appendChild(this.hidden_);this.graphDiv.appendChild(this.canvas_);this.mouseEventElement_=this.createMouseEventElement_();this.layout_=new DygraphLayout(this);var b=this;this.mouseMoveHandler_=function(c){b.mouseMove_(c)};this.mouseOutHandler_=function(f){var d=f.target||f.fromElement;var c=f.relatedTarget||f.toElement;if(Dygraph.isNodeContainedBy(d,b.graphDiv)&&!Dygraph.isNodeContainedBy(c,b.graphDiv)){b.mouseOut_(f)}};this.addAndTrackEvent(window,"mouseout",this.mouseOutHandler_);this.addAndTrackEvent(this.mouseEventElement_,"mousemove",this.mouseMoveHandler_);if(!this.resizeHandler_){this.resizeHandler_=function(c){b.resize()};this.addAndTrackEvent(window,"resize",this.resizeHandler_)}};Dygraph.prototype.resizeElements_=function(){this.graphDiv.style.width=this.width_+"px";this.graphDiv.style.height=this.height_+"px";this.canvas_.width=this.width_;this.canvas_.height=this.height_;this.canvas_.style.width=this.width_+"px";this.canvas_.style.height=this.height_+"px";this.hidden_.width=this.width_;this.hidden_.height=this.height_;this.hidden_.style.width=this.width_+"px";this.hidden_.style.height=this.height_+"px"};Dygraph.prototype.destroy=function(){this.canvas_ctx_.restore();this.hidden_ctx_.restore();var a=function(c){while(c.hasChildNodes()){a(c.firstChild);c.removeChild(c.firstChild)}};this.removeTrackedEvents_();Dygraph.removeEvent(window,"mouseout",this.mouseOutHandler_);Dygraph.removeEvent(this.mouseEventElement_,"mousemove",this.mouseMoveHandler_);Dygraph.removeEvent(window,"resize",this.resizeHandler_);this.resizeHandler_=null;a(this.maindiv_);var b=function(c){for(var d in c){if(typeof(c[d])==="object"){c[d]=null}}};b(this.layout_);b(this.plotter_);b(this)};Dygraph.prototype.createPlotKitCanvas_=function(a){var b=Dygraph.createCanvas();b.style.position="absolute";b.style.top=a.style.top;b.style.left=a.style.left;b.width=this.width_;b.height=this.height_;b.style.width=this.width_+"px";b.style.height=this.height_+"px";return b};Dygraph.prototype.createMouseEventElement_=function(){if(this.isUsingExcanvas_){var a=document.createElement("div");a.style.position="absolute";a.style.backgroundColor="white";a.style.filter="alpha(opacity=0)";a.style.width=this.width_+"px";a.style.height=this.height_+"px";this.graphDiv.appendChild(a);return a}else{return this.canvas_}};Dygraph.prototype.setColors_=function(){var g=this.getLabels();var e=g.length-1;this.colors_=[];this.colorsMap_={};var a=this.attr_("colors");var d;if(!a){var c=this.attr_("colorSaturation")||1;var b=this.attr_("colorValue")||0.5;var k=Math.ceil(e/2);for(d=1;d<=e;d++){if(!this.visibility()[d-1]){continue}var h=d%2?Math.ceil(d/2):(k+d/2);var f=(1*h/(1+e));var j=Dygraph.hsvToRGB(f,c,b);this.colors_.push(j);this.colorsMap_[g[d]]=j}}else{for(d=0;d<e;d++){if(!this.visibility()[d]){continue}var j=a[d%a.length];this.colors_.push(j);this.colorsMap_[g[1+d]]=j}}};Dygraph.prototype.getColors=function(){return this.colors_};Dygraph.prototype.getPropertiesForSeries=function(c){var a=-1;var d=this.getLabels();for(var b=1;b<d.length;b++){if(d[b]==c){a=b;break}}if(a==-1){return null}return{name:c,column:a,visible:this.visibility()[a-1],color:this.colorsMap_[c],axis:1+this.attributes_.axisForSeries(c)}};Dygraph.prototype.createRollInterface_=function(){if(!this.roller_){this.roller_=document.createElement("input");this.roller_.type="text";this.roller_.style.display="none";this.graphDiv.appendChild(this.roller_)}var e=this.attr_("showRoller")?"block":"none";var d=this.plotter_.area;var b={position:"absolute",zIndex:10,top:(d.y+d.h-25)+"px",left:(d.x+1)+"px",display:e};this.roller_.size="2";this.roller_.value=this.rollPeriod_;for(var a in b){if(b.hasOwnProperty(a)){this.roller_.style[a]=b[a]}}var c=this;this.roller_.onchange=function(){c.adjustRoll(c.roller_.value)}};Dygraph.prototype.dragGetX_=function(b,a){return Dygraph.pageX(b)-a.px};Dygraph.prototype.dragGetY_=function(b,a){return Dygraph.pageY(b)-a.py};Dygraph.prototype.createDragInterface_=function(){var c={isZooming:false,isPanning:false,is2DPan:false,dragStartX:null,dragStartY:null,dragEndX:null,dragEndY:null,dragDirection:null,prevEndX:null,prevEndY:null,prevDragDirection:null,cancelNextDblclick:false,initialLeftmostDate:null,xUnitsPerPixel:null,dateRange:null,px:0,py:0,boundedDates:null,boundedValues:null,tarp:new Dygraph.IFrameTarp(),initializeMouseDown:function(j,i,h){if(j.preventDefault){j.preventDefault()}else{j.returnValue=false;j.cancelBubble=true}h.px=Dygraph.findPosX(i.canvas_);h.py=Dygraph.findPosY(i.canvas_);h.dragStartX=i.dragGetX_(j,h);h.dragStartY=i.dragGetY_(j,h);h.cancelNextDblclick=false;h.tarp.cover()}};var f=this.attr_("interactionModel");var b=this;var e=function(g){return function(h){g(h,b,c)}};for(var a in f){if(!f.hasOwnProperty(a)){continue}this.addAndTrackEvent(this.mouseEventElement_,a,e(f[a]))}var d=function(h){if(c.isZooming||c.isPanning){c.isZooming=false;c.dragStartX=null;c.dragStartY=null}if(c.isPanning){c.isPanning=false;c.draggingDate=null;c.dateRange=null;for(var g=0;g<b.axes_.length;g++){delete b.axes_[g].draggingValue;delete b.axes_[g].dragValueRange}}c.tarp.uncover()};this.addAndTrackEvent(document,"mouseup",d)};Dygraph.prototype.drawZoomRect_=function(e,c,i,b,g,a,f,d){var h=this.canvas_ctx_;if(a==Dygraph.HORIZONTAL){h.clearRect(Math.min(c,f),this.layout_.getPlotArea().y,Math.abs(c-f),this.layout_.getPlotArea().h)}else{if(a==Dygraph.VERTICAL){h.clearRect(this.layout_.getPlotArea().x,Math.min(b,d),this.layout_.getPlotArea().w,Math.abs(b-d))}}if(e==Dygraph.HORIZONTAL){if(i&&c){h.fillStyle="rgba(128,128,128,0.33)";h.fillRect(Math.min(c,i),this.layout_.getPlotArea().y,Math.abs(i-c),this.layout_.getPlotArea().h)}}else{if(e==Dygraph.VERTICAL){if(g&&b){h.fillStyle="rgba(128,128,128,0.33)";h.fillRect(this.layout_.getPlotArea().x,Math.min(b,g),this.layout_.getPlotArea().w,Math.abs(g-b))}}}if(this.isUsingExcanvas_){this.currentZoomRectArgs_=[e,c,i,b,g,0,0,0]}};Dygraph.prototype.clearZoomRect_=function(){this.currentZoomRectArgs_=null;this.canvas_ctx_.clearRect(0,0,this.canvas_.width,this.canvas_.height)};
+Dygraph.prototype.createInterface_=function(){
+	var a=this.maindiv_;this.graphDiv=document.createElement("div");this.graphDiv.style.textAlign="left";a.appendChild(this.graphDiv);this.canvas_=Dygraph.createCanvas();this.canvas_.style.position="absolute";this.hidden_=this.createPlotKitCanvas_(this.canvas_);this.resizeElements_();this.canvas_ctx_=Dygraph.getContext(this.canvas_);this.hidden_ctx_=Dygraph.getContext(this.hidden_);this.graphDiv.appendChild(this.hidden_);this.graphDiv.appendChild(this.canvas_);this.mouseEventElement_=this.createMouseEventElement_();this.layout_=new DygraphLayout(this);var b=this;this.mouseMoveHandler_=function(c){b.mouseMove_(c)};this.mouseOutHandler_=function(f){var d=f.target||f.fromElement;var c=f.relatedTarget||f.toElement;if(Dygraph.isNodeContainedBy(d,b.graphDiv)&&!Dygraph.isNodeContainedBy(c,b.graphDiv)){b.mouseOut_(f)}};this.addAndTrackEvent(window,"mouseout",this.mouseOutHandler_);this.addAndTrackEvent(this.mouseEventElement_,"mousemove",this.mouseMoveHandler_);if(!this.resizeHandler_){this.resizeHandler_=function(c){b.resize()};this.addAndTrackEvent(window,"resize",this.resizeHandler_)}
+};
+
+Dygraph.prototype.resizeElements_=function(){
+	this.graphDiv.style.width=this.width_+"px";this.graphDiv.style.height=this.height_+"px";this.canvas_.width=this.width_;this.canvas_.height=this.height_;this.canvas_.style.width=this.width_+"px";this.canvas_.style.height=this.height_+"px";this.hidden_.width=this.width_;this.hidden_.height=this.height_;this.hidden_.style.width=this.width_+"px";this.hidden_.style.height=this.height_+"px"
+};
+
+Dygraph.prototype.destroy=function(){
+	this.canvas_ctx_.restore();this.hidden_ctx_.restore();var a=function(c){while(c.hasChildNodes()){a(c.firstChild);c.removeChild(c.firstChild)}};this.removeTrackedEvents_();Dygraph.removeEvent(window,"mouseout",this.mouseOutHandler_);Dygraph.removeEvent(this.mouseEventElement_,"mousemove",this.mouseMoveHandler_);Dygraph.removeEvent(window,"resize",this.resizeHandler_);this.resizeHandler_=null;a(this.maindiv_);var b=function(c){for(var d in c){if(typeof(c[d])==="object"){c[d]=null}}};b(this.layout_);b(this.plotter_);b(this)
+};
+
+Dygraph.prototype.createPlotKitCanvas_=function(a){
+	var b=Dygraph.createCanvas();b.style.position="absolute";b.style.top=a.style.top;b.style.left=a.style.left;b.width=this.width_;b.height=this.height_;b.style.width=this.width_+"px";b.style.height=this.height_+"px";return b
+};
+
+Dygraph.prototype.createMouseEventElement_=function(){
+	if(this.isUsingExcanvas_){var a=document.createElement("div");a.style.position="absolute";a.style.backgroundColor="white";a.style.filter="alpha(opacity=0)";a.style.width=this.width_+"px";a.style.height=this.height_+"px";this.graphDiv.appendChild(a);return a}else{return this.canvas_}
+};
+
+Dygraph.prototype.setColors_=function(){
+	var g = [''];
+	for(var i=0; i<this.series.length; i++){
+		g.push(this.series[i].label);
+	}
+	var e = g.length-1;
+	this.colors_=[];
+	this.colorsMap_={};
+	var a=this.attr_("colors");
+	var d;
+	/*if(!a){
+		var c=this.attr_("colorSaturation")||1;
+		var b=this.attr_("colorValue")||0.5;
+		var k=Math.ceil(e/2);
+		for(d=1;d<=e;d++){
+			if(!this.visibility()[d-1]){
+				continue;
+			}
+			var h=d%2?Math.ceil(d/2):(k+d/2);
+			var f=(1*h/(1+e));
+			var j=Dygraph.hsvToRGB(f,c,b);
+			this.colors_.push(j);
+			this.colorsMap_[g[d]]=j
+		}
+	}
+	else{*/
+		for(d=0;d<e;d++){
+			/*if(!this.visibility()[d]){
+				continue
+			}*/
+			var j = this.series[d].color;
+			this.colors_.push(j);
+			this.colorsMap_[g[1+d]] = j;
+		}
+};
+
+Dygraph.prototype.getColors=function(){
+	return this.colors_
+};
+
+Dygraph.prototype.getPropertiesForSeries=function(c){
+	var a=-1;var d=this.getLabels();for(var b=1;b<d.length;b++){if(d[b]==c){a=b;break}}if(a==-1){return null}return{name:c,column:a,visible:this.visibility()[a-1],color:this.colorsMap_[c],axis:1+this.attributes_.axisForSeries(c)}
+};
+
+Dygraph.prototype.createRollInterface_=function(){
+	if(!this.roller_){this.roller_=document.createElement("input");this.roller_.type="text";this.roller_.style.display="none";this.graphDiv.appendChild(this.roller_)}var e=this.attr_("showRoller")?"block":"none";var d=this.plotter_.area;var b={position:"absolute",zIndex:10,top:(d.y+d.h-25)+"px",left:(d.x+1)+"px",display:e};this.roller_.size="2";this.roller_.value=this.rollPeriod_;for(var a in b){if(b.hasOwnProperty(a)){this.roller_.style[a]=b[a]}}var c=this;this.roller_.onchange=function(){c.adjustRoll(c.roller_.value)}
+};
+
+Dygraph.prototype.dragGetX_=function(b,a){
+	return Dygraph.pageX(b)-a.px
+};
+
+Dygraph.prototype.dragGetY_=function(b,a){
+	return Dygraph.pageY(b)-a.py
+};
+
+Dygraph.prototype.createDragInterface_=function(){
+	var c={isZooming:false,isPanning:false,is2DPan:false,dragStartX:null,dragStartY:null,dragEndX:null,dragEndY:null,dragDirection:null,prevEndX:null,prevEndY:null,prevDragDirection:null,cancelNextDblclick:false,initialLeftmostDate:null,xUnitsPerPixel:null,dateRange:null,px:0,py:0,boundedDates:null,boundedValues:null,tarp:new Dygraph.IFrameTarp(),initializeMouseDown:function(j,i,h){if(j.preventDefault){j.preventDefault()}else{j.returnValue=false;j.cancelBubble=true}h.px=Dygraph.findPosX(i.canvas_);h.py=Dygraph.findPosY(i.canvas_);h.dragStartX=i.dragGetX_(j,h);h.dragStartY=i.dragGetY_(j,h);h.cancelNextDblclick=false;h.tarp.cover()}};var f=this.attr_("interactionModel");var b=this;var e=function(g){return function(h){g(h,b,c)}};for(var a in f){if(!f.hasOwnProperty(a)){continue}this.addAndTrackEvent(this.mouseEventElement_,a,e(f[a]))}var d=function(h){if(c.isZooming||c.isPanning){c.isZooming=false;c.dragStartX=null;c.dragStartY=null}if(c.isPanning){c.isPanning=false;c.draggingDate=null;c.dateRange=null;for(var g=0;g<b.axes_.length;g++){delete b.axes_[g].draggingValue;delete b.axes_[g].dragValueRange}}c.tarp.uncover()};this.addAndTrackEvent(document,"mouseup",d)
+};
+
+Dygraph.prototype.drawZoomRect_=function(e,c,i,b,g,a,f,d){
+	var h=this.canvas_ctx_;if(a==Dygraph.HORIZONTAL){h.clearRect(Math.min(c,f),this.layout_.getPlotArea().y,Math.abs(c-f),this.layout_.getPlotArea().h)}else{if(a==Dygraph.VERTICAL){h.clearRect(this.layout_.getPlotArea().x,Math.min(b,d),this.layout_.getPlotArea().w,Math.abs(b-d))}}if(e==Dygraph.HORIZONTAL){if(i&&c){h.fillStyle="rgba(128,128,128,0.33)";h.fillRect(Math.min(c,i),this.layout_.getPlotArea().y,Math.abs(i-c),this.layout_.getPlotArea().h)}}else{if(e==Dygraph.VERTICAL){if(g&&b){h.fillStyle="rgba(128,128,128,0.33)";h.fillRect(this.layout_.getPlotArea().x,Math.min(b,g),this.layout_.getPlotArea().w,Math.abs(g-b))}}}if(this.isUsingExcanvas_){this.currentZoomRectArgs_=[e,c,i,b,g,0,0,0]}
+};
+
+Dygraph.prototype.clearZoomRect_=function(){
+	this.currentZoomRectArgs_=null;this.canvas_ctx_.clearRect(0,0,this.canvas_.width,this.canvas_.height)
+};
 
 Dygraph.prototype.doZoomX_=function(c,a){
 	this.currentZoomRectArgs_=null;
@@ -720,7 +889,7 @@ Dygraph.prototype.gatherDatasets_=function(w,f){
 			l = w[u];
 			s[u - 1] = [0, l.length - 1];
 		}
-		var v = this.attr_("labels")[u];
+		var v = this.series[u-1].label;
 		var o = this.extremeValues_(l);
 		//console.log('##ssfsdfds', l, p, v, s[u-1][0]);
 		var m = Dygraph.seriesToPoints_(l, p, v, s[u - 1][0]); 
@@ -737,7 +906,38 @@ Dygraph.prototype.gatherDatasets_=function(w,f){
 	}
 };
 
-Dygraph.prototype.drawGraph_=function(){var a=new Date();var d=this.is_initial_draw_;this.is_initial_draw_=false;this.layout_.removeAllDatasets();this.setColors_();this.attrs_.pointSize=0.5*this.attr_("highlightCircleSize");var j=this.gatherDatasets_(this.rolledSeries_,this.dateWindow_);var h=j.points;var k=j.extremes;this.boundaryIds_=j.boundaryIds;this.setIndexByName_={};var g=this.attr_("labels");if(g.length>0){this.setIndexByName_[g[0]]=0}var e=0;for(var f=1;f<h.length;f++){this.setIndexByName_[g[f]]=f;if(!this.visibility()[f-1]){continue}this.layout_.addDataset(g[f],h[f]);this.datasetIndex_[f]=e++}this.computeYAxisRanges_(k);this.layout_.setYAxes(this.axes_);this.addXTicks_();var b=this.zoomed_x_;this.zoomed_x_=b;this.layout_.evaluate();this.renderGraph_(d);if(this.attr_("timingName")){var c=new Date();Dygraph.info(this.attr_("timingName")+" - drawGraph: "+(c-a)+"ms")}};
+Dygraph.prototype.drawGraph_=function(){
+	var a=new Date();
+	var d=this.is_initial_draw_;
+	this.is_initial_draw_=false;this.layout_.removeAllDatasets();
+	this.setColors_();
+	this.attrs_.pointSize=0.5*this.attr_("highlightCircleSize");
+	var j=this.gatherDatasets_(this.rolledSeries_,this.dateWindow_);
+	var h=j.points;
+	var k=j.extremes;this.boundaryIds_=j.boundaryIds;this.setIndexByName_={};
+	var g = [''];
+	for(var i=0; i<this.series.length; i++){
+		g.push(this.series[i].label);
+	}
+	if(g.length>0){
+		this.setIndexByName_[g[0]]=0
+	}
+	var e=0;
+	for(var f=1;f<h.length;f++){
+		this.setIndexByName_[g[f]]=f;
+		if(!this.visibility()[f-1]){
+			continue;
+		}
+		this.layout_.addDataset(g[f],h[f]);
+		this.datasetIndex_[f]=e++
+	}
+	this.computeYAxisRanges_(k);
+	this.layout_.setYAxes(this.axes_);this.addXTicks_();
+	var b=this.zoomed_x_;this.zoomed_x_=b;
+	this.layout_.evaluate();this.renderGraph_(d);
+	if(this.attr_("timingName")){var c=new Date();
+	Dygraph.info(this.attr_("timingName")+" - drawGraph: "+(c-a)+"ms")}
+};
 
 Dygraph.prototype.renderGraph_=function(b){
 	this.cascadeEvents_("clearChart");
@@ -991,9 +1191,9 @@ Dygraph.prototype.parseArray_ = function(c){
 		this.attributes_.reparseSeries()
 	}
 	else{*/
-		var b = [];
-		for(var s in this.series){
-			b.push(s.label);
+		var b = [''];	//one automatic for the x-axis
+		for(var i=0; i<this.series.length; i++){
+			b.push(this.series[i].label);
 		}
 		if(b.length != c[0].length){
 			this.error("Mismatch between number of labels ("+b+") and number of columns in array ("+c[0].length+")");
@@ -1025,87 +1225,138 @@ Dygraph.prototype.parseArray_ = function(c){
 };
 
 //totoaep
-Dygraph.prototype.parseDataTable_=function(w){
+Dygraph.prototype.parseDataTable_ = function(data){
 
-	var d=function(i){
-		var j=String.fromCharCode(65+i%26);
-		i=Math.floor(i/26);
-		while(i>0){
-			j=String.fromCharCode(65+(i-1)%26)+j.toLowerCase();i=Math.floor((i-1)/26)
-		}
-		return j
-	};
-	var h=w.getNumberOfColumns();
-	var g=w.getNumberOfRows();
-	var f=w.getColumnType(0);
-	if(f=="date"||f=="datetime"){
-		this.attrs_.xValueParser=Dygraph.dateParser;
-		this.attrs_.axes.x.valueFormatter=Dygraph.dateString_;
-		this.attrs_.axes.x.ticker=Dygraph.dateTicker;
-		this.attrs_.axes.x.axisLabelFormatter=Dygraph.dateAxisFormatter
-	}
-	else{
-		if(f=="number"){
-			this.attrs_.xValueParser=function(i){return parseFloat(i)};
-			this.attrs_.axes.x.valueFormatter=function(i){return i};
-			this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;
-			this.attrs_.axes.x.axisLabelFormatter=this.attrs_.axes.x.valueFormatter;
-		}
-	else{
-		this.error("only 'date', 'datetime' and 'number' types are supported for column 1 of DataTable input (Got '"+f+"')");
-		return null
-	}
-}
-	var m=[];
-	var t={};
-	var s=false;
-	var q,o;
-	for(q=1;q<h;q++){
-		var b=w.getColumnType(q);if(b=="number"){m.push(q)}else{if(b=="string"&&this.attr_("displayAnnotations")){var r=m[m.length-1];if(!t.hasOwnProperty(r)){t[r]=[q]}else{t[r].push(q)}s=true}else{this.error("Only 'number' is supported as a dependent type with Gviz. 'string' is only supported if displayAnnotations is true")}}
-	}
-	var u=[w.getColumnLabel(0)];
-	for(q=0;q<m.length;q++){
-		u.push(w.getColumnLabel(m[q]));
-		if(this.attr_("errorBars")){
-			q += 1;
-		}
-	}
-	this.attrs_.labels = u;
-	h=u.length;
-	var v=[];
-	var l=false;
-	var a=[];
-	for(q=0;q<g;q++){
-		var e=[];
-		if(typeof(w.getValue(q,0))==="undefined"||w.getValue(q,0)===null){
-			this.warn("Ignoring row "+q+" of DataTable because of undefined or null first column.");continue
-		}
-		if(f=="date"||f=="datetime"){
-			e.push(w.getValue(q,0).getTime())
-		}
-		else{
-			e.push(w.getValue(q,0))
-		}
-		if(!this.attr_("errorBars")){
-			for(o=0;o<m.length;o++){var c=m[o];e.push(w.getValue(q,c));if(s&&t.hasOwnProperty(c)&&w.getValue(q,t[c][0])!==null){var p={};p.series=w.getColumnLabel(c);p.xval=e[0];p.shortText=d(a.length);p.text="";for(var n=0;n<t[c].length;n++){if(n){p.text+="\n"}p.text+=w.getValue(q,t[c][n])}a.push(p)}}for(o=0;o<e.length;o++){if(!isFinite(e[o])){e[o]=null}}
-		}
-		else{
-			for(o=0;o<h-1;o++){e.push([w.getValue(q,1+2*o),w.getValue(q,2+2*o)])}
-		}
-		if(v.length>0&&e[0]<v[v.length-1][0]){
-			l=true
-		}
-		v.push(e)
-	}
-	if(l){
-		this.warn("DataTable is out of order; order it correctly to speed loading.");
-		v.sort(function(j,i){return j[0]-i[0]})
-	}
-	this.rawData_ = v;
-	if(a.length>0){
-		this.setAnnotations(a,true);
-	}
-	this.attributes_.reparseSeries();
+	
+  var shortTextForAnnotationNum = function(num) {
+    // converts [0-9]+ [A-Z][a-z]*
+    // example: 0=A, 1=B, 25=Z, 26=Aa, 27=Ab
+    // and continues like.. Ba Bb .. Za .. Zz..Aaa...Zzz Aaaa Zzzz
+    var shortText = String.fromCharCode(65 /* A */ + num % 26);
+    num = Math.floor(num / 26);
+    while ( num > 0 ) {
+      shortText = String.fromCharCode(65 /* A */ + (num - 1) % 26 ) + shortText.toLowerCase();
+      num = Math.floor((num - 1) / 26);
+    }
+    return shortText;
+  };
+
+  var cols = data.getNumberOfColumns();
+  var rows = data.getNumberOfRows();
+
+  var indepType = data.getColumnType(0);
+  if (indepType == 'date' || indepType == 'datetime') {
+    this.attrs_.xValueParser = Dygraph.dateParser;
+    this.attrs_.axes.x.valueFormatter = Dygraph.dateString_;
+    this.attrs_.axes.x.ticker = Dygraph.dateTicker;
+    this.attrs_.axes.x.axisLabelFormatter = Dygraph.dateAxisFormatter;
+  } else if (indepType == 'number') {
+    this.attrs_.xValueParser = function(x) { return parseFloat(x); };
+    this.attrs_.axes.x.valueFormatter = function(x) { return x; };
+    this.attrs_.axes.x.ticker = Dygraph.numericTicks;
+    this.attrs_.axes.x.axisLabelFormatter = this.attrs_.axes.x.valueFormatter;
+  } else {
+    Dygraph.error("only 'date', 'datetime' and 'number' types are supported " +
+                  "for column 1 of DataTable input (Got '" + indepType + "')");
+    return null;
+  }
+
+  // Array of the column indices which contain data (and not annotations).
+  var colIdx = [];
+  var annotationCols = {};  // data index -> [annotation cols]
+  var hasAnnotations = false;
+  var i, j;
+  for (i = 1; i < cols; i++) {
+    var type = data.getColumnType(i);
+    if (type == 'number') {
+      colIdx.push(i);
+    } else if (type == 'string' && this.getBooleanOption('displayAnnotations')) {
+      // This is OK -- it's an annotation column.
+      var dataIdx = colIdx[colIdx.length - 1];
+      if (!annotationCols.hasOwnProperty(dataIdx)) {
+        annotationCols[dataIdx] = [i];
+      } else {
+        annotationCols[dataIdx].push(i);
+      }
+      hasAnnotations = true;
+    } else {
+      Dygraph.error("Only 'number' is supported as a dependent type with Gviz." +
+                    " 'string' is only supported if displayAnnotations is true");
+    }
+  }
+
+  // Read column labels
+  // TODO(danvk): add support back for errorBars
+  var labels = [data.getColumnLabel(0)];
+  for (i = 0; i < colIdx.length; i++) {
+    labels.push(data.getColumnLabel(colIdx[i]));
+    if (this.getBooleanOption("errorBars")) i += 1;
+  }
+  this.attrs_.labels = labels;
+  cols = labels.length;
+
+  var ret = [];
+  var outOfOrder = false;
+  var annotations = [];
+  for (i = 0; i < rows; i++) {
+    var row = [];
+    if (typeof(data.getValue(i, 0)) === 'undefined' ||
+        data.getValue(i, 0) === null) {
+      Dygraph.warn("Ignoring row " + i +
+                   " of DataTable because of undefined or null first column.");
+      continue;
+    }
+
+    if (indepType == 'date' || indepType == 'datetime') {
+      row.push(data.getValue(i, 0).getTime());
+    } else {
+      row.push(data.getValue(i, 0));
+    }
+    if (!this.getBooleanOption("errorBars")) {
+      for (j = 0; j < colIdx.length; j++) {
+        var col = colIdx[j];
+        row.push(data.getValue(i, col));
+        if (hasAnnotations &&
+            annotationCols.hasOwnProperty(col) &&
+            data.getValue(i, annotationCols[col][0]) !== null) {
+          var ann = {};
+          ann.series = data.getColumnLabel(col);
+          ann.xval = row[0];
+          ann.shortText = shortTextForAnnotationNum(annotations.length);
+          ann.text = '';
+          for (var k = 0; k < annotationCols[col].length; k++) {
+            if (k) ann.text += "\n";
+            ann.text += data.getValue(i, annotationCols[col][k]);
+          }
+          annotations.push(ann);
+        }
+      }
+
+      // Strip out infinities, which give dygraphs problems later on.
+      for (j = 0; j < row.length; j++) {
+        if (!isFinite(row[j])) row[j] = null;
+      }
+    } else {
+      for (j = 0; j < cols - 1; j++) {
+        row.push([ data.getValue(i, 1 + 2 * j), data.getValue(i, 2 + 2 * j) ]);
+      }
+    }
+    if (ret.length > 0 && row[0] < ret[ret.length - 1][0]) {
+      outOfOrder = true;
+    }
+    ret.push(row);
+  }
+
+  if (outOfOrder) {
+    Dygraph.warn("DataTable is out of order; order it correctly to speed loading.");
+    ret.sort(function(a,b) { return a[0] - b[0]; });
+  }
+  this.rawData_ = ret;
+
+  if (annotations.length > 0) {
+    this.setAnnotations(annotations, true);
+  }
+  this.attributes_.reparseSeries();
 };
 
 Dygraph.prototype.start_ = function(){
@@ -1439,25 +1690,16 @@ Dygraph.Plugins.Legend=(function(){
 			var nonEmptyLengendOnStartUp = w.getOption('nonEmptyLengendOnStartUp');	//modif aep
 			
 			if(nonEmptyLengendOnStartUp){		//do the same thing as if a point was selected -- !TODO: factorize this code!
-				result.appendChild(valueFormatterFunction(null, A, z[0], w));	//add date legend
+				result.appendChild(w.xAxisConfiguration.legendDomElement(null, w));	//add date legend
 			}
-			for(u=1;u<z.length;u++){
-				var q = w.getPropertiesForSeries(z[u]);
-				/*if(!q.visible){
-					continue;
-				}*/
-				m = w.getOption("strokePattern",z[u]);
-				s = d(m,q.color,f);		
-				var axisOptions = v[q.axis-1];
-				var valueFormatterFunction = axisOptions("valueFormatter");
-				var e = valueFormatterFunction(null, axisOptions, z[u], w);
+			for(u=0; u<w.series.length; u++){
+				var e = w.series[u].legendDomElement(null, w.series[u], u, w);
 				result.appendChild(e);	//add value legend
 			}
-			
 			return result;
 		}
 		
-		result.appendChild(valueFormatterFunction(p,A,z[0],w));
+		result.appendChild(w.xAxisConfiguration.legendDomElement(p, w));	//add date legend
 		var k = w.getOption("labelsShowZeroValues");
 		var B = w.getHighlightSeries();
 		//console.log('##selectedPoints', selectedPoints);
@@ -1473,20 +1715,12 @@ Dygraph.Plugins.Legend=(function(){
 			//var e = valueFormatterFunction(t.yval, axisOptions, t.name, w);
 			//result.appendChild(e);
 		}
-		for(u=1;u<z.length;u++){
-			var q = w.getPropertiesForSeries(z[u]);
-			m = w.getOption("strokePattern",z[u]);
-			s = d(m,q.color,f);		
-			var axisOptions = v[q.axis-1];
-			var valueFormatterFunction = axisOptions("valueFormatter");
-			var serieName = z[u];
-			var e;
+		for(u=0; u<w.series.length;u++){			
+			var currentValue = null;
 			if(-1 != seriesNamesSelected.indexOf(serieName)){
-				e = valueFormatterFunction(seriesNamesValues[serieName].yval, axisOptions, serieName, w);
+				currentValue = seriesNamesValues[serieName].yval;
 			}
-			else{
-				e = valueFormatterFunction(null, axisOptions, serieName, w);
-			}
+			var e = w.series[u].legendDomElement(currentValue, w.series[u], u, w);
 			result.appendChild(e);	//add value legend
 		}
 		
