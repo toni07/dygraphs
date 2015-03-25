@@ -44,14 +44,15 @@
 			if(null != val){
 				tmpVal = val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$& ');
 			}
-			var shortSerieName = serie.label.replace('[##DATE## : ##VALUE## %]',"");
-			shortSerieName = shortSerieName.replace('[##DATE## : ##VALUE## Kg]',"");
-			shortSerieName = shortSerieName.charAt(0).toUpperCase()+shortSerieName.substring(1).toLowerCase();
 			var tmpDiv = document.createElement('span');
 			tmpDiv.style.cursor = 'pointer';
-			tmpDiv.innerHTML = '<span><span class="legend-square" style="background-color:'+ serie.color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + shortSerieName + ': '+ tmpVal + ' '+ serie.unitLabel +' </span>&nbsp;';
+			tmpDiv.innerHTML = '<span><span class="legend-square" style="background-color:'+ serie.color +  ';">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + serie.label + ': '+ tmpVal + ' '+ serie.unitLabel +' </span>&nbsp;';
 			tmpDiv.addEventListener('click', function(){
-				graphObj.setVisibility(serieIndex, false);
+				if(null == serie.visible){
+					serie.visible = true;
+				}
+				serie.visible = !serie.visible;
+				graphObj.setVisibility(serieIndex, serie.visible);
 			});
 			return tmpDiv;
 		};
