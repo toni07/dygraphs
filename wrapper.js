@@ -21,6 +21,7 @@ var DtpDyGraph = {
 		var annotations = [];
 	
 		var chartOptions = {
+			series: options.series,
 			labels: options.labels,
 			legend: 'always',
 			nonEmptyLengendOnStartUp: true,

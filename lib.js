@@ -592,7 +592,6 @@ Dygraph.prototype.extremeValues_=function(d){
 	return [h, f]
 };
 
-//totoaep
 Dygraph.prototype.predraw_ = function(){
 
 	var e = new Date();
@@ -767,7 +766,47 @@ Dygraph.prototype.renderGraph_=function(b){
 	}
 };
 
-Dygraph.prototype.computeYAxes_ = function(){var b,d,c,f,a;if(this.axes_!==undefined&&this.user_attrs_.hasOwnProperty("valueRange")===false){b=[];for(c=0;c<this.axes_.length;c++){b.push(this.axes_[c].valueWindow)}}this.axes_=[];for(d=0;d<this.attributes_.numAxes();d++){f={g:this};Dygraph.update(f,this.attributes_.axisOptions(d));this.axes_[d]=f}a=this.attr_("valueRange");if(a){this.axes_[0].valueRange=a}if(b!==undefined){var e=Math.min(b.length,this.axes_.length);for(c=0;c<e;c++){this.axes_[c].valueWindow=b[c]}}for(d=0;d<this.axes_.length;d++){if(d===0){f=this.optionsViewForAxis_("y"+(d?"2":""));a=f("valueRange");if(a){this.axes_[d].valueRange=a}}else{var g=this.user_attrs_.axes;if(g&&g.y2){a=g.y2.valueRange;if(a){this.axes_[d].valueRange=a}}}}};Dygraph.prototype.numAxes=function(){return this.attributes_.numAxes()};Dygraph.prototype.axisPropertiesForSeries=function(a){return this.axes_[this.attributes_.axisForSeries(a)]};Dygraph.prototype.computeYAxisRanges_=function(a){var g=function(i){return isNaN(parseFloat(i))};var q=this.attributes_.numAxes();var b,x,o,B;var p;for(var y=0;y<q;y++){var c=this.axes_[y];var C=this.attributes_.getForAxis("logscale",y);var G=this.attributes_.getForAxis("includeZero",y);var l=this.attributes_.getForAxis("independentTicks",y);o=this.attributes_.seriesForAxis(y);b=true;B=0.1;if(this.attr_("yRangePad")!==null){b=false;B=this.attr_("yRangePad")/this.plotter_.area.h}if(o.length===0){c.extremeRange=[0,1]}else{var D=Infinity;var A=-Infinity;var t,s;for(var w=0;w<o.length;w++){if(!a.hasOwnProperty(o[w])){continue}t=a[o[w]][0];if(t!==null){D=Math.min(t,D)}s=a[o[w]][1];if(s!==null){A=Math.max(s,A)}}if(G&&!C){if(D>0){D=0}if(A<0){A=0}}if(D==Infinity){D=0}if(A==-Infinity){A=1}x=A-D;if(x===0){if(A!==0){x=Math.abs(A)}else{A=1;x=1}}var h,H;if(C){if(b){h=A+B*x;H=D}else{var E=Math.exp(Math.log(x)*B);h=A*E;H=D/E}}else{h=A+B*x;H=D-B*x;if(b&&!this.attr_("avoidMinZero")){if(H<0&&D>=0){H=0}if(h>0&&A<=0){h=0}}}c.extremeRange=[H,h]}if(c.valueWindow){c.computedValueRange=[c.valueWindow[0],c.valueWindow[1]]}else{if(c.valueRange){var e=g(c.valueRange[0])?c.extremeRange[0]:c.valueRange[0];var d=g(c.valueRange[1])?c.extremeRange[1]:c.valueRange[1];if(!b){if(c.logscale){var E=Math.exp(Math.log(x)*B);e*=E;d/=E}else{x=d-e;e-=x*B;d+=x*B}}c.computedValueRange=[e,d]}else{c.computedValueRange=c.extremeRange}}if(l){c.independentTicks=l;var r=this.optionsViewForAxis_("y"+(y?"2":""));var F=r("ticker");c.ticks=F(c.computedValueRange[0],c.computedValueRange[1],this.height_,r,this);if(!p){p=c}}}if(p===undefined){throw ('Configuration Error: At least one axis has to have the "independentTicks" option activated.')}for(var y=0;y<q;y++){var c=this.axes_[y];if(!c.independentTicks){var r=this.optionsViewForAxis_("y"+(y?"2":""));var F=r("ticker");var m=p.ticks;var n=p.computedValueRange[1]-p.computedValueRange[0];var I=c.computedValueRange[1]-c.computedValueRange[0];var f=[];for(var v=0;v<m.length;v++){var u=(m[v].v-p.computedValueRange[0])/n;var z=c.computedValueRange[0]+u*I;f.push(z)}c.ticks=F(c.computedValueRange[0],c.computedValueRange[1],this.height_,r,this,f)}}};Dygraph.prototype.extractSeries_=function(a,f,c){var g=[];var h=this.attr_("errorBars");var e=this.attr_("customBars");for(var d=0;d<a.length;d++){var l=a[d][0];var m=a[d][f];if(c){if(h||e){for(var b=0;b<m.length;b++){if(m[b]<=0){m=null;break}}}else{if(m<=0){m=null}}}if(m!==null){g.push([l,m])}else{g.push([l,h?[null,null]:e?[null,null,null]:m])}}return g};
+Dygraph.prototype.computeYAxes_ = function(){
+	var b,d,c,f,a;
+	if(this.axes_!==undefined&&this.user_attrs_.hasOwnProperty("valueRange")===false){
+		b=[];
+		for(c=0;c<this.axes_.length;c++){
+			b.push(this.axes_[c].valueWindow)
+		}
+	}
+	this.axes_=[];
+	for(d=0;d<this.attributes_.numAxes();d++){
+		f={g:this};Dygraph.update(f,this.attributes_.axisOptions(d));this.axes_[d]=f
+	}
+	a=this.attr_("valueRange");
+	if(a){
+		this.axes_[0].valueRange=a
+	}
+	if(b!==undefined){
+		var e=Math.min(b.length,this.axes_.length);for(c=0;c<e;c++){this.axes_[c].valueWindow=b[c]}
+	}
+	for(d=0;d<this.axes_.length;d++){
+		if(d===0){
+			f=this.optionsViewForAxis_("y"+(d?"2":""));a=f("valueRange");if(a){this.axes_[d].valueRange=a}
+		}
+		else{
+			var g=this.user_attrs_.axes;
+			if(g&&g.y2){
+				a=g.y2.valueRange;
+				if(a){
+					this.axes_[d].valueRange=a
+				}
+			}
+		}
+	}
+};
+
+
+Dygraph.prototype.numAxes=function(){
+	return this.attributes_.numAxes()
+};
+
+Dygraph.prototype.axisPropertiesForSeries=function(a){return this.axes_[this.attributes_.axisForSeries(a)]};Dygraph.prototype.computeYAxisRanges_=function(a){var g=function(i){return isNaN(parseFloat(i))};var q=this.attributes_.numAxes();var b,x,o,B;var p;for(var y=0;y<q;y++){var c=this.axes_[y];var C=this.attributes_.getForAxis("logscale",y);var G=this.attributes_.getForAxis("includeZero",y);var l=this.attributes_.getForAxis("independentTicks",y);o=this.attributes_.seriesForAxis(y);b=true;B=0.1;if(this.attr_("yRangePad")!==null){b=false;B=this.attr_("yRangePad")/this.plotter_.area.h}if(o.length===0){c.extremeRange=[0,1]}else{var D=Infinity;var A=-Infinity;var t,s;for(var w=0;w<o.length;w++){if(!a.hasOwnProperty(o[w])){continue}t=a[o[w]][0];if(t!==null){D=Math.min(t,D)}s=a[o[w]][1];if(s!==null){A=Math.max(s,A)}}if(G&&!C){if(D>0){D=0}if(A<0){A=0}}if(D==Infinity){D=0}if(A==-Infinity){A=1}x=A-D;if(x===0){if(A!==0){x=Math.abs(A)}else{A=1;x=1}}var h,H;if(C){if(b){h=A+B*x;H=D}else{var E=Math.exp(Math.log(x)*B);h=A*E;H=D/E}}else{h=A+B*x;H=D-B*x;if(b&&!this.attr_("avoidMinZero")){if(H<0&&D>=0){H=0}if(h>0&&A<=0){h=0}}}c.extremeRange=[H,h]}if(c.valueWindow){c.computedValueRange=[c.valueWindow[0],c.valueWindow[1]]}else{if(c.valueRange){var e=g(c.valueRange[0])?c.extremeRange[0]:c.valueRange[0];var d=g(c.valueRange[1])?c.extremeRange[1]:c.valueRange[1];if(!b){if(c.logscale){var E=Math.exp(Math.log(x)*B);e*=E;d/=E}else{x=d-e;e-=x*B;d+=x*B}}c.computedValueRange=[e,d]}else{c.computedValueRange=c.extremeRange}}if(l){c.independentTicks=l;var r=this.optionsViewForAxis_("y"+(y?"2":""));var F=r("ticker");c.ticks=F(c.computedValueRange[0],c.computedValueRange[1],this.height_,r,this);if(!p){p=c}}}if(p===undefined){throw ('Configuration Error: At least one axis has to have the "independentTicks" option activated.')}for(var y=0;y<q;y++){var c=this.axes_[y];if(!c.independentTicks){var r=this.optionsViewForAxis_("y"+(y?"2":""));var F=r("ticker");var m=p.ticks;var n=p.computedValueRange[1]-p.computedValueRange[0];var I=c.computedValueRange[1]-c.computedValueRange[0];var f=[];for(var v=0;v<m.length;v++){var u=(m[v].v-p.computedValueRange[0])/n;var z=c.computedValueRange[0]+u*I;f.push(z)}c.ticks=F(c.computedValueRange[0],c.computedValueRange[1],this.height_,r,this,f)}}};Dygraph.prototype.extractSeries_=function(a,f,c){var g=[];var h=this.attr_("errorBars");var e=this.attr_("customBars");for(var d=0;d<a.length;d++){var l=a[d][0];var m=a[d][f];if(c){if(h||e){for(var b=0;b<m.length;b++){if(m[b]<=0){m=null;break}}}else{if(m<=0){m=null}}}if(m!==null){g.push([l,m])}else{g.push([l,h?[null,null]:e?[null,null,null]:m])}}return g};
 
 Dygraph.prototype.rollingAverage = function(seriesArray, d){
 
@@ -909,40 +948,165 @@ else{
 	this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;
 	this.attrs_.axes.x.axisLabelFormatter=this.attrs_.axes.x.valueFormatter;
 	
-}};Dygraph.prototype.parseFloat_=function(a,c,b){var e=parseFloat(a);if(!isNaN(e)){return e}if(/^ *$/.test(a)){return null}if(/^ *nan *$/i.test(a)){return NaN}var d="Unable to parse '"+a+"' as a number";if(b!==null&&c!==null){d+=" on line "+(1+c)+" ('"+b+"') of CSV."}this.error(d);return null};Dygraph.prototype.parseCSV_=function(t){var r=[];var s=Dygraph.detectLineDelimiter(t);var a=t.split(s||"\n");var g,k;var p=this.attr_("delimiter");if(a[0].indexOf(p)==-1&&a[0].indexOf("\t")>=0){p="\t"}var b=0;if(!("labels" in this.user_attrs_)){b=1;this.attrs_.labels=a[0].split(p);this.attributes_.reparseSeries()}var o=0;var m;var q=false;var c=this.attr_("labels").length;var f=false;for(var l=b;l<a.length;l++){var e=a[l];o=l;if(e.length===0){continue}if(e[0]=="#"){continue}var d=e.split(p);if(d.length<2){continue}var h=[];if(!q){this.detectTypeFromString_(d[0]);m=this.attr_("xValueParser");q=true}h[0]=m(d[0],this);if(this.fractions_){for(k=1;k<d.length;k++){g=d[k].split("/");if(g.length!=2){this.error('Expected fractional "num/den" values in CSV data but found a value \''+d[k]+"' on line "+(1+l)+" ('"+e+"') which is not of this form.");h[k]=[0,0]}else{h[k]=[this.parseFloat_(g[0],l,e),this.parseFloat_(g[1],l,e)]}}}else{if(this.attr_("errorBars")){if(d.length%2!=1){this.error("Expected alternating (value, stdev.) pairs in CSV data but line "+(1+l)+" has an odd number of values ("+(d.length-1)+"): '"+e+"'")}for(k=1;k<d.length;k+=2){h[(k+1)/2]=[this.parseFloat_(d[k],l,e),this.parseFloat_(d[k+1],l,e)]}}else{if(this.attr_("customBars")){for(k=1;k<d.length;k++){var u=d[k];if(/^ *$/.test(u)){h[k]=[null,null,null]}else{g=u.split(";");if(g.length==3){h[k]=[this.parseFloat_(g[0],l,e),this.parseFloat_(g[1],l,e),this.parseFloat_(g[2],l,e)]}else{this.warn('When using customBars, values must be either blank or "low;center;high" tuples (got "'+u+'" on line '+(1+l))}}}}else{for(k=1;k<d.length;k++){h[k]=this.parseFloat_(d[k],l,e)}}}}if(r.length>0&&h[0]<r[r.length-1][0]){f=true}if(h.length!=c){this.error("Number of columns in line "+l+" ("+h.length+") does not agree with number of labels ("+c+") "+e)}if(l===0&&this.attr_("labels")){var n=true;for(k=0;n&&k<h.length;k++){if(h[k]){n=false}}if(n){this.warn("The dygraphs 'labels' option is set, but the first row of CSV data ('"+e+"') appears to also contain labels. Will drop the CSV labels and use the option labels.");continue}}r.push(h)}if(f){this.warn("CSV is out of order; order it correctly to speed loading.");r.sort(function(j,i){return j[0]-i[0]})}return r};Dygraph.prototype.parseArray_=function(c){if(c.length===0){this.error("Can't plot empty data set");return null}if(c[0].length===0){this.error("Data set cannot contain an empty row");return null}var a;if(this.attr_("labels")===null){this.warn("Using default labels. Set labels explicitly via 'labels' in the options parameter");this.attrs_.labels=["X"];for(a=1;a<c[0].length;a++){this.attrs_.labels.push("Y"+a)}this.attributes_.reparseSeries()}else{var b=this.attr_("labels");if(b.length!=c[0].length){this.error("Mismatch between number of labels ("+b+") and number of columns in array ("+c[0].length+")");return null}}if(Dygraph.isDateLike(c[0][0])){
+}};Dygraph.prototype.parseFloat_=function(a,c,b){var e=parseFloat(a);if(!isNaN(e)){return e}if(/^ *$/.test(a)){return null}if(/^ *nan *$/i.test(a)){return NaN}var d="Unable to parse '"+a+"' as a number";if(b!==null&&c!==null){d+=" on line "+(1+c)+" ('"+b+"') of CSV."}this.error(d);return null};
 
-this.attrs_.axes.x.valueFormatter=Dygraph.dateString_;
-
-this.attrs_.axes.x.ticker=Dygraph.dateTicker;this.attrs_.axes.x.axisLabelFormatter=Dygraph.dateAxisFormatter;var d=Dygraph.clone(c);for(a=0;a<c.length;a++){if(d[a].length===0){this.error("Row "+(1+a)+" of data is empty");return null}if(d[a][0]===null||typeof(d[a][0].getTime)!="function"||isNaN(d[a][0].getTime())){this.error("x value in row "+(1+a)+" is not a Date");return null}d[a][0]=d[a][0].getTime()}return d}else{
-
-this.attrs_.axes.x.valueFormatter=function(e){return e};
-
-
-this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;this.attrs_.axes.x.axisLabelFormatter=Dygraph.numberAxisLabelFormatter;return c}};Dygraph.prototype.parseDataTable_=function(w){var d=function(i){var j=String.fromCharCode(65+i%26);i=Math.floor(i/26);while(i>0){j=String.fromCharCode(65+(i-1)%26)+j.toLowerCase();i=Math.floor((i-1)/26)}return j};
-
-var h=w.getNumberOfColumns();
-var g=w.getNumberOfRows();
-var f=w.getColumnType(0);
-
-if(f=="date"||f=="datetime"){
-	this.attrs_.xValueParser=Dygraph.dateParser;
-	this.attrs_.axes.x.valueFormatter=Dygraph.dateString_;
-	this.attrs_.axes.x.ticker=Dygraph.dateTicker;
-	this.attrs_.axes.x.axisLabelFormatter=Dygraph.dateAxisFormatter
-}
-else{
-	if(f=="number"){
-		this.attrs_.xValueParser=function(i){return parseFloat(i)};
-		this.attrs_.axes.x.valueFormatter=function(i){return i};
-		this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;
-		this.attrs_.axes.x.axisLabelFormatter=this.attrs_.axes.x.valueFormatter;
+/*Dygraph.prototype.parseCSV_=function(t){var r=[];var s=Dygraph.detectLineDelimiter(t);var a=t.split(s||"\n");var g,k;var p=this.attr_("delimiter");if(a[0].indexOf(p)==-1&&a[0].indexOf("\t")>=0){p="\t"}
+	var b=0;if(!("labels" in this.user_attrs_)){
+		b=1;this.attrs_.labels=a[0].split(p);this.attributes_.reparseSeries()
 	}
-else{
-	this.error("only 'date', 'datetime' and 'number' types are supported for column 1 of DataTable input (Got '"+f+"')");
-	return null
+	var o=0;
+	var m;
+	var q=false;
+	var c=this.attr_("labels").length;
+	var f=false;
+	for(var l=b;l<a.length;l++){
+		var e=a[l];o=l;if(e.length===0){continue}if(e[0]=="#"){continue}var d=e.split(p);if(d.length<2){continue}var h=[];if(!q){this.detectTypeFromString_(d[0]);m=this.attr_("xValueParser");q=true}h[0]=m(d[0],this);if(this.fractions_){for(k=1;k<d.length;k++){g=d[k].split("/");if(g.length!=2){this.error('Expected fractional "num/den" values in CSV data but found a value \''+d[k]+"' on line "+(1+l)+" ('"+e+"') which is not of this form.");h[k]=[0,0]}else{h[k]=[this.parseFloat_(g[0],l,e),this.parseFloat_(g[1],l,e)]}}}else{if(this.attr_("errorBars")){if(d.length%2!=1){this.error("Expected alternating (value, stdev.) pairs in CSV data but line "+(1+l)+" has an odd number of values ("+(d.length-1)+"): '"+e+"'")}for(k=1;k<d.length;k+=2){h[(k+1)/2]=[this.parseFloat_(d[k],l,e),this.parseFloat_(d[k+1],l,e)]}}else{if(this.attr_("customBars")){for(k=1;k<d.length;k++){var u=d[k];if(/^ *$/.test(u)){h[k]=[null,null,null]}else{g=u.split(";");if(g.length==3){h[k]=[this.parseFloat_(g[0],l,e),this.parseFloat_(g[1],l,e),this.parseFloat_(g[2],l,e)]}else{this.warn('When using customBars, values must be either blank or "low;center;high" tuples (got "'+u+'" on line '+(1+l))}}}}else{for(k=1;k<d.length;k++){h[k]=this.parseFloat_(d[k],l,e)}}}}if(r.length>0&&h[0]<r[r.length-1][0]){f=true}
+		if(h.length!=c){
+			this.error("Number of columns in line "+l+" ("+h.length+") does not agree with number of labels ("+c+") "+e)}if(l===0&&this.attr_("labels")){var n=true;for(k=0;n&&k<h.length;k++){if(h[k]){n=false}}if(n){this.warn("The dygraphs 'labels' option is set, but the first row of CSV data ('"+e+"') appears to also contain labels. Will drop the CSV labels and use the option labels.");continue}}r.push(h)
+		}
+		if(f){this.warn("CSV is out of order; order it correctly to speed loading.");
+		r.sort(function(j,i){
+			return j[0]-i[0]
+		}
+		)
+		}
+	return r};*/
+
+	
+Dygraph.prototype.parseArray_ = function(c){
+
+	if(c.length===0){
+		this.error("Can't plot empty data set");return null
+	}
+	if(c[0].length===0){
+		this.error("Data set cannot contain an empty row");return null
+	}
+	var a;
+	/*if(this.attr_("labels")===null){
+		this.warn("Using default labels. Set labels explicitly via 'labels' in the options parameter");
+		this.attrs_.labels=["X"];
+		for(a=1;a<c[0].length;a++){
+			this.attrs_.labels.push("Y"+a)
+		}
+		this.attributes_.reparseSeries()
+	}
+	else{*/
+		var b = [];
+		for(var s in this.series){
+			b.push(s.label);
+		}
+		if(b.length != c[0].length){
+			this.error("Mismatch between number of labels ("+b+") and number of columns in array ("+c[0].length+")");
+			return null
+		}
+	/*}*/
+	if(Dygraph.isDateLike(c[0][0])){
+		this.attrs_.axes.x.valueFormatter=Dygraph.dateString_;
+		this.attrs_.axes.x.ticker=Dygraph.dateTicker;
+		this.attrs_.axes.x.axisLabelFormatter=Dygraph.dateAxisFormatter;
+		var d=Dygraph.clone(c);
+		for(a=0;a<c.length;a++){
+			if(d[a].length===0){
+				this.error("Row "+(1+a)+" of data is empty");return null
+			}
+			if(d[a][0]===null||typeof(d[a][0].getTime)!="function"||isNaN(d[a][0].getTime())){
+				this.error("x value in row "+(1+a)+" is not a Date");
+				return null
+			}
+			d[a][0]=d[a][0].getTime()
+		}
+		return d
+	}
+	else{
+		this.attrs_.axes.x.valueFormatter=function(e){return e};
+		this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;
+		this.attrs_.axes.x.axisLabelFormatter=Dygraph.numberAxisLabelFormatter;return c
+	}
+};
+
+//totoaep
+Dygraph.prototype.parseDataTable_=function(w){
+
+	var d=function(i){
+		var j=String.fromCharCode(65+i%26);
+		i=Math.floor(i/26);
+		while(i>0){
+			j=String.fromCharCode(65+(i-1)%26)+j.toLowerCase();i=Math.floor((i-1)/26)
+		}
+		return j
+	};
+	var h=w.getNumberOfColumns();
+	var g=w.getNumberOfRows();
+	var f=w.getColumnType(0);
+	if(f=="date"||f=="datetime"){
+		this.attrs_.xValueParser=Dygraph.dateParser;
+		this.attrs_.axes.x.valueFormatter=Dygraph.dateString_;
+		this.attrs_.axes.x.ticker=Dygraph.dateTicker;
+		this.attrs_.axes.x.axisLabelFormatter=Dygraph.dateAxisFormatter
+	}
+	else{
+		if(f=="number"){
+			this.attrs_.xValueParser=function(i){return parseFloat(i)};
+			this.attrs_.axes.x.valueFormatter=function(i){return i};
+			this.attrs_.axes.x.ticker=Dygraph.numericLinearTicks;
+			this.attrs_.axes.x.axisLabelFormatter=this.attrs_.axes.x.valueFormatter;
+		}
+	else{
+		this.error("only 'date', 'datetime' and 'number' types are supported for column 1 of DataTable input (Got '"+f+"')");
+		return null
+	}
 }
-}
-var m=[];var t={};var s=false;var q,o;for(q=1;q<h;q++){var b=w.getColumnType(q);if(b=="number"){m.push(q)}else{if(b=="string"&&this.attr_("displayAnnotations")){var r=m[m.length-1];if(!t.hasOwnProperty(r)){t[r]=[q]}else{t[r].push(q)}s=true}else{this.error("Only 'number' is supported as a dependent type with Gviz. 'string' is only supported if displayAnnotations is true")}}}var u=[w.getColumnLabel(0)];for(q=0;q<m.length;q++){u.push(w.getColumnLabel(m[q]));if(this.attr_("errorBars")){q+=1}}this.attrs_.labels=u;h=u.length;var v=[];var l=false;var a=[];for(q=0;q<g;q++){var e=[];if(typeof(w.getValue(q,0))==="undefined"||w.getValue(q,0)===null){this.warn("Ignoring row "+q+" of DataTable because of undefined or null first column.");continue}if(f=="date"||f=="datetime"){e.push(w.getValue(q,0).getTime())}else{e.push(w.getValue(q,0))}if(!this.attr_("errorBars")){for(o=0;o<m.length;o++){var c=m[o];e.push(w.getValue(q,c));if(s&&t.hasOwnProperty(c)&&w.getValue(q,t[c][0])!==null){var p={};p.series=w.getColumnLabel(c);p.xval=e[0];p.shortText=d(a.length);p.text="";for(var n=0;n<t[c].length;n++){if(n){p.text+="\n"}p.text+=w.getValue(q,t[c][n])}a.push(p)}}for(o=0;o<e.length;o++){if(!isFinite(e[o])){e[o]=null}}}else{for(o=0;o<h-1;o++){e.push([w.getValue(q,1+2*o),w.getValue(q,2+2*o)])}}if(v.length>0&&e[0]<v[v.length-1][0]){l=true}v.push(e)}if(l){this.warn("DataTable is out of order; order it correctly to speed loading.");v.sort(function(j,i){return j[0]-i[0]})}this.rawData_=v;if(a.length>0){this.setAnnotations(a,true)}this.attributes_.reparseSeries()};
+	var m=[];
+	var t={};
+	var s=false;
+	var q,o;
+	for(q=1;q<h;q++){
+		var b=w.getColumnType(q);if(b=="number"){m.push(q)}else{if(b=="string"&&this.attr_("displayAnnotations")){var r=m[m.length-1];if(!t.hasOwnProperty(r)){t[r]=[q]}else{t[r].push(q)}s=true}else{this.error("Only 'number' is supported as a dependent type with Gviz. 'string' is only supported if displayAnnotations is true")}}
+	}
+	var u=[w.getColumnLabel(0)];
+	for(q=0;q<m.length;q++){
+		u.push(w.getColumnLabel(m[q]));
+		if(this.attr_("errorBars")){
+			q += 1;
+		}
+	}
+	this.attrs_.labels = u;
+	h=u.length;
+	var v=[];
+	var l=false;
+	var a=[];
+	for(q=0;q<g;q++){
+		var e=[];
+		if(typeof(w.getValue(q,0))==="undefined"||w.getValue(q,0)===null){
+			this.warn("Ignoring row "+q+" of DataTable because of undefined or null first column.");continue
+		}
+		if(f=="date"||f=="datetime"){
+			e.push(w.getValue(q,0).getTime())
+		}
+		else{
+			e.push(w.getValue(q,0))
+		}
+		if(!this.attr_("errorBars")){
+			for(o=0;o<m.length;o++){var c=m[o];e.push(w.getValue(q,c));if(s&&t.hasOwnProperty(c)&&w.getValue(q,t[c][0])!==null){var p={};p.series=w.getColumnLabel(c);p.xval=e[0];p.shortText=d(a.length);p.text="";for(var n=0;n<t[c].length;n++){if(n){p.text+="\n"}p.text+=w.getValue(q,t[c][n])}a.push(p)}}for(o=0;o<e.length;o++){if(!isFinite(e[o])){e[o]=null}}
+		}
+		else{
+			for(o=0;o<h-1;o++){e.push([w.getValue(q,1+2*o),w.getValue(q,2+2*o)])}
+		}
+		if(v.length>0&&e[0]<v[v.length-1][0]){
+			l=true
+		}
+		v.push(e)
+	}
+	if(l){
+		this.warn("DataTable is out of order; order it correctly to speed loading.");
+		v.sort(function(j,i){return j[0]-i[0]})
+	}
+	this.rawData_ = v;
+	if(a.length>0){
+		this.setAnnotations(a,true);
+	}
+	this.attributes_.reparseSeries();
+};
 
 Dygraph.prototype.start_ = function(){
 
