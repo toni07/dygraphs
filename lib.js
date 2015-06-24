@@ -367,7 +367,15 @@ DygraphCanvasRenderer.prototype._renderLineChart=function(g,u){
 	}
 };
 
-DygraphCanvasRenderer._Plotters={linePlotter:function(a){DygraphCanvasRenderer._linePlotter(a)},fillPlotter:function(a){DygraphCanvasRenderer._fillPlotter(a)},errorPlotter:function(a){DygraphCanvasRenderer._errorPlotter(a)}};DygraphCanvasRenderer._linePlotter=function(f){var d=f.dygraph;var h=f.setName;var i=f.strokeWidth;var a=d.getOption("strokeBorderWidth",h);var j=d.getOption("drawPointCallback",h)||Dygraph.Circles.DEFAULT;var k=d.getOption("strokePattern",h);var c=d.getOption("drawPoints",h);var b=d.getOption("pointSize",h);if(a&&i){DygraphCanvasRenderer._drawStyledLine(f,d.getOption("strokeBorderColor",h),i+2*a,k,c,j,b)}DygraphCanvasRenderer._drawStyledLine(f,f.color,i,k,c,j,b)};
+DygraphCanvasRenderer._Plotters={linePlotter:function(a){DygraphCanvasRenderer._linePlotter(a)},fillPlotter:function(a){DygraphCanvasRenderer._fillPlotter(a)},errorPlotter:function(a){DygraphCanvasRenderer._errorPlotter(a)}};DygraphCanvasRenderer._linePlotter=function(f){var d=f.dygraph;var h=f.setName;var i=f.strokeWidth;var a=d.getOption("strokeBorderWidth",h);
+var j=d.getOption("drawPointCallback",h)||Dygraph.Circles.DEFAULT;var k=d.getOption("strokePattern",h);
+
+var c=d.getOption("drawPoints",h);
+var b=d.getOption("pointSize",h);
+if(a&&i){
+	DygraphCanvasRenderer._drawStyledLine(f,d.getOption("strokeBorderColor",h),i+2*a,k,c,j,b)
+}
+DygraphCanvasRenderer._drawStyledLine(f,f.color,i,k,c,j,b)};
 
 DygraphCanvasRenderer._errorPlotter=function(s){
 	var r=s.dygraph;
@@ -444,16 +452,19 @@ DygraphCanvasRenderer._fillPlotter=function(F){
 };
 "use strict";
 	
-	
+/**
+ * constructor
+*/ 
 var Dygraph = function(divElem, dataArray, options){
 	this.is_initial_draw_ = true;
 	this.readyFns_ = [];
 	this.__init__(divElem, dataArray, options);
 	
 };
-Dygraph.NAME="Dygraph";
-Dygraph.VERSION="1.0.1";
-Dygraph.__repr__=function(){
+
+Dygraph.NAME = "Dygraph";
+Dygraph.VERSION = "1.0.1";
+Dygraph.__repr__ = function(){
 	return"["+this.NAME+" "+this.VERSION+"]"
 };
 Dygraph.toString=function(){
@@ -506,8 +517,17 @@ axes:{
 		ticker:null
 	},y:{pixelsPerLabel:30,valueFormatter:Dygraph.numberValueFormatter,axisLabelFormatter:Dygraph.numberAxisLabelFormatter,drawGrid:true,independentTicks:true,ticker:null},y2:{pixelsPerLabel:30,valueFormatter:Dygraph.numberValueFormatter,axisLabelFormatter:Dygraph.numberAxisLabelFormatter,drawGrid:false,independentTicks:false,ticker:null
 }
-}};Dygraph.HORIZONTAL=1;Dygraph.VERTICAL=2;Dygraph.PLUGINS=[];Dygraph.addedAnnotationCSS=false;Dygraph.prototype.__old_init__=function(f,d,e,b){if(e!==null){var a=["Date"];for(var c=0;c<e.length;c++){a.push(e[c])}Dygraph.update(b,{labels:a})}
-this.__init__(f,d,b)};
+}};
+
+Dygraph.HORIZONTAL=1;
+Dygraph.VERTICAL=2;
+Dygraph.PLUGINS=[];
+Dygraph.addedAnnotationCSS=false;
+
+Dygraph.prototype.__old_init__=function(f,d,e,b){
+	if(e!==null){var a=["Date"];for(var c=0;c<e.length;c++){a.push(e[c])}Dygraph.update(b,{labels:a})}
+	this.__init__(f,d,b)
+};
 
 Dygraph.prototype.__init__ = function(a, dataArray, chartOptions){
 
@@ -525,6 +545,7 @@ Dygraph.prototype.__init__ = function(a, dataArray, chartOptions){
 		Dygraph.error("Constructing dygraph with a non-existent div!");return
 	}
 	this.isUsingExcanvas_=typeof(G_vmlCanvasManager)!="undefined";
+	this.chartLegend = chartOptions.chartLegend;
 	this.maindiv_=a;
 	this.file_ = dataArray;
 	this.rollPeriod_= chartOptions.rollPeriod||Dygraph.DEFAULT_ROLL_PERIOD;
@@ -1633,25 +1654,18 @@ c.prototype.layout=function(k){
 
 Dygraph.Plugins.Legend=(function(){
 	var c=function(){
-		this.legend_div_=null;
-		this.is_generated_div_=false
+		this.chartLegend = null;
+		this.is_generated_div_ = false
 	};
 	c.prototype.toString=function(){
 		return"Legend Plugin"
 	};
 	var createLegendFunction,d;
 	c.prototype.activate=function(j){
-		var m;
 		var f=j.getOption("labelsDivWidth");
-		var l=j.getOption("labelsDiv");
-		if(l&&null!==l){
-			if(typeof(l)=="string"||l instanceof String){
-				m=document.getElementById(l)
-			}else{
-				m=l
-			}
-		}
-		else{
+		//var m=j.getOption("labelsDiv");
+		var chartLegend = j.getOption("chartLegend");
+		/*if(!m || null===m){
 			var i={
 				position:"absolute",fontSize:"14px",zIndex:10,width:f+"px",top:"0px",left:(j.size().width-f-2)+"px",background:"white",lineHeight:"normal",textAlign:"left",overflow:"hidden"
 			};
@@ -1660,81 +1674,92 @@ Dygraph.Plugins.Legend=(function(){
 			m.className="dygraph-legend";
 			for(var h in i){if(!i.hasOwnProperty(h)){continue}try{m.style[h]=i[h]}catch(k){this.warn("You are using unsupported css properties for your browser in labelsDivStyles")}}
 			j.graphDiv.appendChild(m);
-			this.is_generated_div_=true}
-			this.legend_div_=m;
-			this.one_em_width_=10;
-			return{select:this.select,deselect:this.deselect,predraw:this.predraw,didDrawChart:this.didDrawChart}
-	};
-	var b=function(g){
-		var f=document.createElement("span");
-		f.setAttribute("style","margin: 0; padding: 0 0 0 1em; border: 0;");
-		g.appendChild(f);
-		var e=f.offsetWidth;
-		g.removeChild(f);
-		return e
+			this.is_generated_div_=true
+		}*/
+		this.chartLegend = chartLegend;
+		this.one_em_width_=10;
+		return{select:this.select,deselect:this.deselect,predraw:this.predraw,didDrawChart:this.didDrawChart}
 	};
 	
 	c.prototype.select=function(i){		//mouseover on the chart
 	
 		var h = i.selectedX;
 		var selectedPoints = i.selectedPoints;
-		var f = createLegendFunction(i.dygraph, h, selectedPoints, this.one_em_width_);
-		this.legend_div_.innerHTML = '';
-		this.legend_div_.appendChild(f);
+		//var f = createLegendFunction(i.dygraph, h, selectedPoints);
+		var f = this.chartLegend.createLegend(i.dygraph, h, selectedPoints);
+		//this.chartLegend.resetContent(i.dygraph, f);
 	};
 	
-    c.prototype.deselect=function(h){	//mouseout on the chart
-		var f = b(this.legend_div_);
-		this.one_em_width_ = f;
-		var g = createLegendFunction(h.dygraph,undefined,undefined,f);
-		//this.legend_div_.innerHTML=g
-		this.legend_div_.innerHTML = '';
-		this.legend_div_.appendChild(g);
+    c.prototype.deselect=function(h, isInit){	//mouseout on the chart
+		if(null == isInit){
+			isInit = false;
+		}
+		//var g = createLegendFunction(h.dygraph,undefined,undefined, isInit);
+		var g = this.chartLegend.createLegend(h.dygraph,undefined,undefined, isInit);
+		this.chartLegend.resetContent(h.dygraph, g);
 	};
 	
-	c.prototype.didDrawChart=function(f){this.deselect(f)};
+	c.prototype.didDrawChart=function(f){
+		this.deselect(f, true)
+	};
+	
 	c.prototype.predraw=function(h){
-		if(!this.is_generated_div_){
+		/*if(!this.is_generated_div_){
 			return
 		}
 		h.dygraph.graphDiv.appendChild(this.legend_div_);
 		var g=h.dygraph.plotter_.area;var f=h.dygraph.getOption("labelsDivWidth");
-		this.legend_div_.style.left=g.x+g.w-f-1+"px";this.legend_div_.style.top=g.y+"px";this.legend_div_.style.width=f+"px"
+		this.legend_div_.style.left=g.x+g.w-f-1+"px";
+		this.legend_div_.style.top=g.y+"px";
+		this.legend_div_.style.width=f+"px"*/
 	};
-	c.prototype.destroy=function(){this.legend_div_=null};
+	c.prototype.destroy=function(){
+		//this.legend_div_=null
+	};
 	
-	createLegendFunction = function(w, p, selectedPoints, f){
-		
+	/**
+	 * @param isInit TRUE if it's the first time this function is called (for the current chart)
+	*/
+	/*createLegendFunction = function(chartInstance, p, selectedPoints, isInit){
+	
+		if(null == isInit){
+			isInit = false;
+		}
+		console.log('##in createLegendFunction', chartInstance, p, selectedPoints);
+		var chartLegend = chartInstance.chartLegend;
+		if(isInit){
+			chartLegend.addChartReference(chartInstance);
+		}
 		var u,s,m;
-		var z = w.getLabels();
-		var A = w.optionsViewForAxis_("x");
+		var z = chartInstance.getLabels();
+		var A = chartInstance.optionsViewForAxis_("x");
 		var valueFormatterFunction = A("valueFormatter");
 		var isFullCustomLegendX = A('isFullCustomLegend');
 		
 		var v = [];
-		var j = w.numAxes();
+		var j = chartInstance.numAxes();
 		for(u=0; u<j; u++){
-			v[u] = w.optionsViewForAxis_("y"+(u?1+u:""));
+			v[u] = chartInstance.optionsViewForAxis_("y"+(u?1+u:""));
 		}
 		
 		var result = document.createElement('div');
 		if(typeof(p)==="undefined"){	//called when the mouse goes out of the chart			
 			
-			var nonEmptyLengendOnStartUp = w.getOption('nonEmptyLengendOnStartUp');	//modif aep
+			var nonEmptyLengendOnStartUp = chartInstance.getOption('nonEmptyLengendOnStartUp');	//modif aep
 			
 			if(nonEmptyLengendOnStartUp){		//do the same thing as if a point was selected -- !TODO: factorize this code!
-				result.appendChild(w.xAxisConfiguration.legendDomElement(null, w));	//add date legend
+				result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(null, chartInstance));	//add date legend
 			}
-			for(u=0; u<w.series.length; u++){
-				var e = w.series[u].legendDomElement(null, w.series[u], u, w);
+			for(u=0; u<chartInstance.series.length; u++){
+				var e = chartInstance.series[u].legendDomElement(null, chartInstance.series[u], u, chartInstance);
 				result.appendChild(e);	//add value legend
 			}
 			return result;
 		}
 		
-		result.appendChild(w.xAxisConfiguration.legendDomElement(p, w));	//add date legend
-		var k = w.getOption("labelsShowZeroValues");
-		var B = w.getHighlightSeries();
+		result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(p, chartInstance));	//add date legend
+		var k = chartInstance.getOption("labelsShowZeroValues");
+		var B = chartInstance.getHighlightSeries();
 		//console.log('##selectedPoints', selectedPoints);
 		var seriesNamesSelected = [];
 		var seriesNamesValues = [];
@@ -1748,18 +1773,18 @@ Dygraph.Plugins.Legend=(function(){
 			//var e = valueFormatterFunction(t.yval, axisOptions, t.name, w);
 			//result.appendChild(e);
 		}
-		for(u=0; u<w.series.length;u++){
-			var serie = w.series[u];
+		for(u=0; u<chartInstance.series.length;u++){
+			var serie = chartInstance.series[u];
 			var currentValue = null;
 			if(-1 != seriesNamesSelected.indexOf(serie.label)){
 				currentValue = seriesNamesValues[serie.label].yval;
 			}
-			var e = serie.legendDomElement(currentValue, serie, u, w);
+			var e = serie.legendDomElement(currentValue, serie, u, chartInstance);
 			result.appendChild(e);	//add value legend
 		}
 		
 		return result;
-	};
+	};*/
 d=function(s,h,r){
 	var e=(/MSIE/.test(navigator.userAgent)&&!window.opera);
 	if(e){

@@ -22,6 +22,7 @@ var DtpDyGraph = {
 	
 		var chartOptions = {
 			series: options.series,
+			chartLegend: options.chartLegend,
 			xAxisConfiguration: options.xAxisConfiguration,
 			labels: options.labels,
 			legend: 'always',
