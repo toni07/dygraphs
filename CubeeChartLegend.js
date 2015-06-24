@@ -7,9 +7,13 @@ var CubeeChartLegend = function(options){
 
 	var me = this;
 
-	this.resetContent = function(chartInstance){
+	this.resetContent = function(chartInstance, selectedPoints){
 		
 		me.globalDiv.innerHTML = '';
+		if(typeof(selectedPoints)==="undefined"){	//called when the mouse goes out of the chart
+			selectedPoints = null;
+		}
+		me.globalDiv.appendChild(chartInstance.xAxisConfiguration.legendDomElement(selectedPoints, chartInstance));
 		//console.log('##me.legendElementList', me.legendElementList);
 		for(var i in me.legendElementList){
 			//console.log('##me.i', i, me.legendElementList[i]);
@@ -23,10 +27,7 @@ var CubeeChartLegend = function(options){
 		if(null == isInit){
 			isInit = false;
 		}
-		//console.log('##in createLegendFunction', chartInstance, chartInstance.maindiv_.id);
-		//var chartLegend = chartInstance.chartLegend;
 		if(isInit){
-			//me.addChartReference(chartInstance);
 			me.legendElementList[chartInstance.maindiv_.id] = null;
 		}
 		var u,s,m;
@@ -41,14 +42,14 @@ var CubeeChartLegend = function(options){
 			v[u] = chartInstance.optionsViewForAxis_("y"+(u?1+u:""));
 		}
 		
-		var result = document.createElement('div');
-		if(typeof(p)==="undefined"){	//called when the mouse goes out of the chart			
+		var result = document.createElement('span');
+		if(typeof(p)==="undefined"){	//called when the mouse goes out of the chart
 			
 			var nonEmptyLengendOnStartUp = chartInstance.getOption('nonEmptyLengendOnStartUp');	//modif aep
 			
-			if(nonEmptyLengendOnStartUp){		//do the same thing as if a point was selected -- !TODO: factorize this code!
-				result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(null, chartInstance));	//add date legend
-			}
+		//	if(nonEmptyLengendOnStartUp){		//do the same thing as if a point was selected -- !TODO: factorize this code!
+		//		result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(null, chartInstance));	//add date legend
+		//	}
 			for(u=0; u<chartInstance.series.length; u++){
 				var e = chartInstance.series[u].legendDomElement(null, chartInstance.series[u], u, chartInstance);
 				result.appendChild(e);	//add value legend
@@ -57,10 +58,9 @@ var CubeeChartLegend = function(options){
 			return;
 		}
 		
-		result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(p, chartInstance));	//add date legend
+		//result.appendChild(chartInstance.xAxisConfiguration.legendDomElement(p, chartInstance));	//add date legend
 		var k = chartInstance.getOption("labelsShowZeroValues");
 		var B = chartInstance.getHighlightSeries();
-		//console.log('##selectedPoints', selectedPoints);
 		var seriesNamesSelected = [];
 		var seriesNamesValues = [];
 		for(u = 0; u < selectedPoints.length; u++){
@@ -78,8 +78,7 @@ var CubeeChartLegend = function(options){
 			result.appendChild(e);	//add value legend
 		}
 		me.legendElementList[chartInstance.maindiv_.id] = result;
-		me.resetContent(chartInstance);
-		//return result;
+		me.resetContent(chartInstance, p);
 	};
 		
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +87,6 @@ var CubeeChartLegend = function(options){
 	this.constructor = function(){
 	
 		me.globalDiv = options.globalDiv;
-		//me.chartReferenceList = new Array();
 		me.legendElementList = {};
 	};
 	
