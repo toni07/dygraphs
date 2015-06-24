@@ -10,7 +10,7 @@ var CubeeChartLegend = function(options){
 	this.resetContent = function(chartInstance){
 		
 		me.globalDiv.innerHTML = '';
-		console.log('##me.legendElementList', me.legendElementList);
+		//console.log('##me.legendElementList', me.legendElementList);
 		for(var i in me.legendElementList){
 			//console.log('##me.i', i, me.legendElementList[i]);
 			me.globalDiv.appendChild(me.legendElementList[i]);

@@ -5,6 +5,7 @@
 	<script src="lib.js"></script>
 	<script src="wrapper.js"></script>
 	<script src="CubeeChartLegend.js"></script>
+	<script src="CubeeChartGroup.js"></script>
 	<style>
 		#div-chart-1 { position: absolute; left: 20px; right: 100px; top: 100px; bottom: 50%; }
 		#div-chart-2 { position: absolute; left: 20px; right: 100px; top: 50%; bottom: 10px; }
@@ -61,7 +62,7 @@
 		};					
 		function displayChart(idDiv, series, chartLegend){
 		
-			DtpDyGraph.dipslayChart(idDiv, getData(), {
+			return DtpDyGraph.dipslayChart(idDiv, getData(), {
 				series: series,
 				xAxisConfiguration: {
 					legendDomElement: function(val, dygraph){
@@ -93,7 +94,7 @@
 		var chartLegend = new CubeeChartLegend({
 			globalDiv: document.getElementById('chart-legend')
 		});
-		displayChart('div-chart-1', [{
+		var chart1 = displayChart('div-chart-1', [{
 					color: '#00ff00',
 					label: 'Historique',
 					dataIndex: 1,
@@ -107,7 +108,7 @@
 					unitLabel: 'kg'
 				}], chartLegend);
 				
-		displayChart('div-chart-2', [{
+		var chart2 = displayChart('div-chart-2', [{
 					color: '#f0f000',
 					label: 'leg1',
 					dataIndex: 1,
@@ -120,6 +121,8 @@
 					legendDomElement: legendDomElement,
 					unitLabel: 'kg'
 				}], chartLegend);
+		var chartInstanceList = [chart1, chart2];
+		new CubeeChartGroup(chartInstanceList, {});
 	</script>
 	
 </body>

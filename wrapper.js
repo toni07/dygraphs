@@ -60,31 +60,7 @@ var DtpDyGraph = {
 					//Dygraph.cancelEvent(event);
 				},
 				dblclick: function(event, g, context){
-					if (event.ctrlKey){
-						if (!(event.offsetX && event.offsetY)){
-							event.offsetX = event.layerX - event.target.offsetLeft;
-							event.offsetY = event.layerY - event.target.offsetTop;
-						}
-
-						var percentages = DtpDyGraph.offsetToPercentage(g, event.offsetX, event.offsetY);
-						var xPct = percentages[0];
-						var yPct = percentages[1];
-
-						if (event.ctrlKey) {
-							DtpDyGraph.zoom(g, +.25, xPct, yPct);
-						} else {
-							DtpDyGraph.zoom(g, +.2, xPct, yPct);
-						}
-
-					}
-					else {
-						g.updateOptions({
-							dateWindow: null,
-							valueRange: null
-						});
-					}
-
-
+					g.resetZoom();
 				}
 			},
 			
